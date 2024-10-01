@@ -1,0 +1,219 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static jazzmin %}
+{% load humanize %}
+{% load admin %}
+{% get_jazzmin_ui_tweaks as jazzmin_ui %}
+
+{% block bodyclass %}{{ block.super }} داشبورد{% endblock %}
+
+
+
+
+{% block content %}
+    {% get_side_menu using="app_list" as dashboard_list %}
+    {% if dashboard_list %}
+        {% widthratio dashboard_list|length 2 1 as middle %}
+    {% endif %}
+<style>
+    
+    .top-card{
+        width: 50px;
+        height: 50px;
+    }
+
+    .main-card{
+        padding: 10px;
+        border: 1px solid #cccccc;
+        border-radius: 15px;
+        background-color: white;
+    }
+    .main-card:hover{
+        border: 1px solid #00d285;
+        border-width: 2px;
+    }
+</style>
+ 
+    <div class="container-fluid my-5">
+    <div class="row">
+ 
+        <div class="col-lg-3 px-4 mb-3">
+            <a href="service/homecareservice/">
+                <div class="row align-items-center main-card">
+                        <div class="col-4 p-0">
+                            <div class="row justify-content-center">
+                                <i class="bi bi-heart-pulse-fill" style="font-size: 40px;color: #00d285; margin: 15px;margin: 0px 10px 0px 10px;
+                                padding-top: 20px;"></i>
+                            </div>
+                        </div>
+                        <div class="col-8 p-0">
+                            <div class="row">
+                                <h3 class="w-100 text-right text-dark">خدمات</h3>
+                            </div>
+                            <div class="row">
+                                <span class="text-right text-dark " >تعداد خدمات : </span>
+                                <span class="text-right text-muted ">{% service_count %}</span>
+                            </div>
+                        </div>
+
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 px-4 mb-3">
+            <a href="cart/homecareorder/">
+                <div class="row align-items-center main-card">
+                        <div class="col-4 p-0">
+                            <div class="row justify-content-center">
+                                <i class="bi bi-currency-dollar" style="font-size: 40px;color: #00d285; margin: 15px;margin: 0px 10px 0px 10px;
+                                padding-top: 20px;"></i>
+                            </div>
+                        </div>
+                        <div class="col-8 p-0">
+                            <div class="row">
+                                <h3 class="w-100 text-right text-dark">سفارشات</h3>
+                            </div>
+                            <div class="row">
+                                <span class="text-right text-dark " >تعداد سفارشات : </span>
+                                <span class="text-right text-muted ">{% order_count %}</span>
+                            </div>
+                        </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 px-4 mb-3">
+            <a href="user/user/">
+                <div class="row align-items-center main-card">
+                        <div class="col-4 p-0">
+                            <div class="row justify-content-center">
+                                <i class="bi bi-person-fill" style="font-size: 40px;color: #00d285; margin: 15px;margin: 0px 10px 0px 10px;
+                                padding-top: 20px;"></i>
+                            </div>
+                        </div>
+                        <div class="col-8 p-0">
+                            <div class="row">
+                                <h3 class="w-100 text-right text-dark">کاربران</h3>
+                            </div>
+                            <div class="row">
+                                <span class="text-right text-dark " >تعداد کاربران : </span>
+                                <span class="text-right text-muted ">{% user_count %}</span>
+                            </div>
+                        </div>
+
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 px-4 mb-3">
+            <a href="blog/article/">
+                <div class="row align-items-center main-card">
+                        <div class="col-4 p-0">
+                            <div class="row justify-content-center">
+                                <i class="bi bi-book-fill" style="font-size: 40px;color: #00d285; margin: 15px;margin: 0px 10px 0px 10px;
+                                padding-top: 20px;"></i>
+                            </div>
+                        </div>
+                        <div class="col-8 p-0">
+                            <div class="row">
+                                <h3 class="w-100 text-right text-dark">مقالات</h3>
+                            </div>
+                            <div class="row">
+                                <span class="text-right text-dark " >تعداد مقالات : </span>
+                                <span class="text-right text-muted ">{% articles_count %}</span>
+                            </div>
+                        </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 px-4 mb-3">
+            <a href="service/homecareserviceprice/">
+                <div class="row align-items-center main-card">
+                        <div class="col-4 p-0">
+                            <div class="row justify-content-center">
+                                <i class="bi bi-currency-dollar" style="font-size: 40px;color: #00d285; margin: 15px;margin: 0px 10px 0px 10px;
+                                padding-top: 20px;"></i>
+                            </div>
+                        </div>
+                        <div class="col-8 p-0">
+                            <div class="row">
+                                <h3 class="w-100 text-right text-dark">قیمت ها</h3>
+                            </div>
+                            <div class="row">
+                                <span class="text-right text-dark " >تعداد قیمت ها : </span>
+                                <span class="text-right text-muted ">{% price_count %}</span>
+                            </div>
+                        </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 px-4 mb-3">
+            <a href="contact/contactus/">
+                <div class="row align-items-center main-card">
+                        <div class="col-4 p-0">
+                            <div class="row justify-content-center">
+                                <i class="bi bi-headset" style="font-size: 40px;color: #00d285; margin: 15px;margin: 0px 10px 0px 10px;
+                                padding-top: 20px;"></i>
+                            </div>
+                        </div>
+                        <div class="col-8 p-0">
+                            <div class="row">
+                                <h3 class="w-100 text-right text-dark">تماسها</h3>
+                            </div>
+                            <div class="row">
+                                <span class="text-right text-dark " >تعداد تماسها : </span>
+                                <span class="text-right text-muted ">{% contactus_count %}</span>
+                            </div>
+                        </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 px-4 mb-3">
+            <a href="user/citymanager/">
+                <div class="row align-items-center main-card">
+                        <div class="col-4 p-0">
+                            <div class="row justify-content-center">
+                                <i class="bi bi-briefcase-fill" style="font-size: 40px;color: #00d285; margin: 15px;margin: 0px 10px 0px 10px;
+                                padding-top: 20px;"></i>
+                            </div>
+                        </div>
+                        <div class="col-8 p-0">
+                            <div class="row">
+                                <h3 class="w-100 text-right text-dark">مدیران</h3>
+                            </div>
+                            <div class="row">
+                                <span class="text-right text-dark " >تعداد مدیران : </span>
+                                <span class="text-right text-muted ">{% manager_count %}</span>
+                            </div>
+                        </div>
+                </div>
+            </a>
+        </div>
+        <div class="col-lg-3 px-4 mb-3">
+            <a href="blog/video/">
+                <div class="row align-items-center main-card">
+                        <div class="col-4 p-0">
+                            <div class="row justify-content-center">
+                                <i class="bi bi-play-btn-fill" style="font-size: 40px;color: #00d285; margin: 15px;margin: 0px 10px 0px 10px;
+                                padding-top: 20px;"></i>
+                            </div>
+                        </div>
+                        <div class="col-8 p-0">
+                            <div class="row">
+                                <h3 class="w-100 text-right text-dark">ویدیوها</h3>
+                            </div>
+                            <div class="row">
+                                <span class="text-right text-dark " >تعداد ویدیوها : </span>
+                                <span class="text-right text-muted ">{% video_count %}</span>
+                            </div>
+                        </div>
+                </div>
+            </a>
+        </div>
+
+    </div>
+</div>
+
+
+
+
+{% endblock %}
+{% block extrajs %}
+
+{% endblock %}
