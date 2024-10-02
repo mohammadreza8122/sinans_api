@@ -32,7 +32,7 @@ class CartItemInline(admin.TabularInline):
 class CartAdmin(admin.ModelAdmin):
     inlines = (CartItemInline,)
     list_display = ("__str__", "is_ordered")
-    list_filter = ("user",)
+    # list_filter = ("user",)
 
 def generate_invoice_excel(modeladmin, request, queryset):
 
@@ -192,19 +192,19 @@ class HomeCareOrderAdmin(ModelAdminJalaliMixin,admin.ModelAdmin):
         "date_created"
     )
     search_fields = ("pay_token",)
-    list_filter = (
-        "user",
-        "status",
-        "ordered_companies",
-        "date_created",
-        (
-            "date_created",
-            DateRangeFilterBuilder(
-                title="بازه دلخواه",
-            ),
-        ),
-    )
-    
+    # list_filter = (
+    #     "user",
+    #     "status",
+    #     "ordered_companies",
+    #     "date_created",
+    #     (
+    #         "date_created",
+    #         DateRangeFilterBuilder(
+    #             title="بازه دلخواه",
+    #         ),
+    #     ),
+    # )
+    #
     class DateCreatedFilter(SimpleListFilter):
         title = "تاریخ ثبت درخواست"
         parameter_name = "date_created_filter"

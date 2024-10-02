@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ["*", ]
 # Application definition
 
 INSTALLED_APPS = [
-    "jazzmin",
+    # "jazzmin",
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -164,47 +164,7 @@ USE_I18N = True
 USE_TZ = True
 
 
-STATIC_URL = "https://sinans.reyhaniads.ir/static/"
-STATIC_ROOT = "/home/reyhania/public_html/sinans.reyhaniads.ir/static/"
-
-MEDIA_URL = "https://sinans.storage.c2.liara.space/media/"
-
 CKEDITOR_UPLOAD_PATH = "uploads/"
-
-
-# S3 Settings
-LIARA_ENDPOINT    = os.getenv("LIARA_ENDPOINT")
-LIARA_BUCKET_NAME = os.getenv("LIARA_BUCKET_NAME")
-LIARA_ACCESS_KEY  = os.getenv("LIARA_ACCESS_KEY")
-LIARA_SECRET_KEY  = os.getenv("LIARA_SECRET_KEY")
-
-# S3 Settings Based on AWS (optional)
-AWS_ACCESS_KEY_ID       = LIARA_ACCESS_KEY
-AWS_SECRET_ACCESS_KEY   = LIARA_SECRET_KEY
-AWS_STORAGE_BUCKET_NAME = LIARA_BUCKET_NAME
-AWS_S3_ENDPOINT_URL     = LIARA_ENDPOINT
-AWS_S3_REGION_NAME      = 'us-east-1'  
-AWS_S3_FILE_OVERWRITE = False
-AWS_S3_OBJECT_PARAMETERS = {
-    'CacheControl': 'max-age=86400',
-}
-STORAGES = {
-  "default": {
-      "BACKEND": "storages.backends.s3.S3Storage",
-  },
-  "staticfiles": {
-      "BACKEND": "django.contrib.staticfiles.storage.StaticFilesStorage",
-  },
-}
-
-
-
-# AWS_LOCATION = 'static'
-# AWS_DEFAULT_ACL = 'public-read'
-
-# STATIC_URL = f'https://{AWS_S3_ENDPOINT_URL}/{AWS_STORAGE_BUCKET_NAME}/{AWS_LOCATION}/'
-# STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
-
 
 
 CKEDITOR_CONFIGS = {
@@ -232,6 +192,19 @@ REST_FRAMEWORK = {
         "rest_framework.authentication.SessionAuthentication",
     ),
 }
+
+
+STATIC_URL = "/static/"
+MEDIA_URL = "/media/"
+
+
+# STATIC_ROOT = BASE_DIR / "static"
+MEDIA_ROOT = BASE_DIR / "media"
+
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
+
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(weeks=10),
