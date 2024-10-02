@@ -41,7 +41,7 @@ class CityAdmin(admin.ModelAdmin):
 @admin.register(HomeCareService)
 class HomeCareServiceAdmin(admin.ModelAdmin):
     list_display = ("title", "category", "is_active", "is_deleted")
-    list_filter = ("title", "category")
+    # list_filter = ("title", "category")
     actions = ("delete_services",)
     raw_id_fields = ('category',)
     inlines = [ServiceFAQInline, ServiceExtraInfoInline]
@@ -63,7 +63,7 @@ class HomeCareServiceAdmin(admin.ModelAdmin):
 @admin.register(HomeCareCategory)
 class HomeCareCategoryAdmin(admin.ModelAdmin):
     list_display = ("title", "father")
-    list_filter = ("title", "father")
+    # list_filter = ("title", "father")
     raw_id_fields = ('father',)
 
 
