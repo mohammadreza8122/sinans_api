@@ -38,31 +38,33 @@ class CityAdmin(admin.ModelAdmin):
     list_filter = ("title", "province")
 
 
-# @admin.register(HomeCareService)
-# class HomeCareServiceAdmin(admin.ModelAdmin):
-#     list_display = ("title", "category", "is_active", "is_deleted")
-#     list_filter = ("title", "category")
-#     actions = ("delete_services",)
-#     inlines = [ServiceFAQInline, ServiceExtraInfoInline]
-#
-#     @admin.action(description="حذف")
-#     def delete_services(self, request, queryset):
-#         for obj in queryset:
-#             obj.is_deleted = True
-#             obj.save()
-#
-#     def get_actions(self, request):
-#         actions = super().get_actions(request)
-#         if "delete_selected" in actions:
-#             del actions["delete_selected"]
-#
-#         return actions
-#
+@admin.register(HomeCareService)
+class HomeCareServiceAdmin(admin.ModelAdmin):
+    list_display = ("title", "category", "is_active", "is_deleted")
+    list_filter = ("title", "category")
+    actions = ("delete_services",)
+    raw_id_fields = ('category',)
+    inlines = [ServiceFAQInline, ServiceExtraInfoInline]
 
-# @admin.register(HomeCareCategory)
-# class HomeCareCategoryAdmin(admin.ModelAdmin):
-#     list_display = ("title", "father")
-#     list_filter = ("title", "father")
+    @admin.action(description="حذف")
+    def delete_services(self, request, queryset):
+        for obj in queryset:
+            obj.is_deleted = True
+            obj.save()
+
+    def get_actions(self, request):
+        actions = super().get_actions(request)
+        if "delete_selected" in actions:
+            del actions["delete_selected"]
+
+        return actions
+
+
+@admin.register(HomeCareCategory)
+class HomeCareCategoryAdmin(admin.ModelAdmin):
+    list_display = ("title", "father")
+    list_filter = ("title", "father")
+    raw_id_fields = ('father',)
 
 
 @admin.register(HomeCareServicePrice)
@@ -76,13 +78,3 @@ class HomeCareServicePriceAdmin(admin.ModelAdmin):
 
     price_display.short_description = "قیمت"
 
-
-class HomeCareCategoryAdmin(admin.ModelAdmin):
-    raw_id_fields = ('father',)
-
-
-class HomeCareServiceAdmin(admin.ModelAdmin):
-    raw_id_fields = ('category',)
-
-admin.site.register(HomeCareCategory, HomeCareCategoryAdmin)
-admin.site.register(HomeCareService, HomeCareServiceAdmin)
