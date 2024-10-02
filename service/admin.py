@@ -38,47 +38,45 @@ class CityAdmin(admin.ModelAdmin):
     list_filter = ("title", "province")
 
 
-@admin.register(HomeCareService)
-class HomeCareServiceAdmin(admin.ModelAdmin):
-    list_display = ('title', 'category', 'is_active')
-    list_filter = ('category', 'is_active')
-    search_fields = ('title',)
-    actions = ("delete_services",)
-    inlines = [ServiceFAQInline, ServiceExtraInfoInline]
+# @admin.register(HomeCareService)
+# class HomeCareServiceAdmin(admin.ModelAdmin):
+#     list_display = ("title", "category", "is_active", "is_deleted")
+#     list_filter = ("title", "category")
+#     actions = ("delete_services",)
+#     inlines = [ServiceFAQInline, ServiceExtraInfoInline]
+#
+#     @admin.action(description="حذف")
+#     def delete_services(self, request, queryset):
+#         for obj in queryset:
+#             obj.is_deleted = True
+#             obj.save()
+#
+#     def get_actions(self, request):
+#         actions = super().get_actions(request)
+#         if "delete_selected" in actions:
+#             del actions["delete_selected"]
+#
+#         return actions
+#
 
-    def get_queryset(self, request):
-        queryset = super().get_queryset(request)
-        queryset = queryset.prefetch_related('servicefaqs', 'serviceextrainfos')
-        return queryset
-
-    def get_actions(self, request):
-        actions = super().get_actions(request)
-        if "delete_selected" in actions:
-            del actions["delete_selected"]
-
-        return actions
-
-
-@admin.register(HomeCareCategory)
-class HomeCareCategoryAdmin(admin.ModelAdmin):
-    list_display = ('title', 'father')
-    list_filter = ('title', 'father')
-    search_fields = ('title',)
-
-    def get_queryset(self, request):
-        queryset = super().get_queryset(request)
-        queryset = queryset.select_related('father')
-        return queryset
-
+# @admin.register(HomeCareCategory)
+# class HomeCareCategoryAdmin(admin.ModelAdmin):
+#     list_display = ("title", "father")
+#     list_filter = ("title", "father")
 
 
 @admin.register(HomeCareServicePrice)
 class HomeCareServicePriceAdmin(admin.ModelAdmin):
     list_display = ("service", "city", "price_display")
     list_filter = ("service", "city","company")
-    
+
 
     def price_display(self, obj):
         return format_html("<span>{}</span>", f"{obj.price:,.0f}")
 
     price_display.short_description = "قیمت"
+
+
+
+admin.site.register(HomeCareCategory)
+admin.site.register(HomeCareService)
