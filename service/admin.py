@@ -40,16 +40,16 @@ class CityAdmin(admin.ModelAdmin):
 
 @admin.register(HomeCareService)
 class HomeCareServiceAdmin(admin.ModelAdmin):
-    # inlines = (ServiceFAQInline, ServiceExtraInfoInline)
-    list_display = ("title", "category", "is_active", "is_deleted")
-    # list_filter = ("title", "category")
+    list_display = ('title', 'category', 'is_active')
+    list_filter = ('category', 'is_active')
+    search_fields = ('title',)
     actions = ("delete_services",)
+    inlines = [ServiceFAQInline, ServiceExtraInfoInline]
 
-    @admin.action(description="حذف")
-    def delete_services(self, request, queryset):
-        for obj in queryset:
-            obj.is_deleted = True
-            obj.save()
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        queryset = queryset.prefetch_related('servicefaqs', 'serviceextrainfos')
+        return queryset
 
     def get_actions(self, request):
         actions = super().get_actions(request)
@@ -61,8 +61,15 @@ class HomeCareServiceAdmin(admin.ModelAdmin):
 
 @admin.register(HomeCareCategory)
 class HomeCareCategoryAdmin(admin.ModelAdmin):
-    list_display = ("title", "father")
-    list_filter = ("title", "father")
+    list_display = ('title', 'father')
+    list_filter = ('title', 'father')
+    search_fields = ('title',)
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        queryset = queryset.select_related('father')
+        return queryset
+
 
 
 @admin.register(HomeCareServicePrice)
