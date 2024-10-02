@@ -77,6 +77,12 @@ class HomeCareServicePriceAdmin(admin.ModelAdmin):
     price_display.short_description = "قیمت"
 
 
+class HomeCareCategoryAdmin(admin.ModelAdmin):
+    raw_id_fields = ('father',)
 
-admin.site.register(HomeCareCategory)
-admin.site.register(HomeCareService)
+
+class HomeCareServiceAdmin(admin.ModelAdmin):
+    raw_id_fields = ('category',)
+
+admin.site.register(HomeCareCategory, HomeCareCategoryAdmin)
+admin.site.register(HomeCareService, HomeCareServiceAdmin)
