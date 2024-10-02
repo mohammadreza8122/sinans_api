@@ -40,7 +40,7 @@ class CityAdmin(admin.ModelAdmin):
 
 @admin.register(HomeCareService)
 class HomeCareServiceAdmin(admin.ModelAdmin):
-    inlines = (ServiceFAQInline, ServiceExtraInfoInline)
+    # inlines = (ServiceFAQInline, ServiceExtraInfoInline)
     list_display = ("title", "category", "is_active", "is_deleted")
     # list_filter = ("title", "category")
     actions = ("delete_services",)
