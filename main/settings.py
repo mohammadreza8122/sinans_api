@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-v1jsy30^*w&5453!by)z&hi^r_p9pju1r^*le@)bclh8eua735'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ["*", ]
 
@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     "jdatetime",
     "rangefilter",
     'import_export',
+    'ajax_select',
     "customadmin",
     "setting",
     "user",

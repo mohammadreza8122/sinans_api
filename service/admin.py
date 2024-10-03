@@ -10,6 +10,19 @@ from .models import (
 )
 from django.utils.html import format_html
 from django.utils.numberformat import format
+from ajax_select import register, LookupChannel
+from ajax_select import make_ajax_form
+
+
+@register('categories')
+class CategoryLookup(LookupChannel):
+    model = HomeCareCategory
+
+    def get_query(self, q, request):
+        return self.model.objects.filter(name__icontains=q)[:50]  # لیمیت برای بهبود عملکرد
+    def format_item_display(self, item):
+        return u"<span class='tag'>{}</span>".format(item.name)
+
 
 class CityInline(admin.TabularInline):
     model = City
@@ -40,6 +53,7 @@ class CityAdmin(admin.ModelAdmin):
 
 @admin.register(HomeCareService)
 class HomeCareServiceAdmin(admin.ModelAdmin):
+    form = make_ajax_form(HomeCareCategory, {'category': 'categories'})
     list_display = ("title", "category", "is_active", "is_deleted")
     # list_filter = ("title", "category")
     actions = ("delete_services",)

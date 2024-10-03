@@ -54,3 +54,4 @@ xlwt==1.3.0
 boto3
 django-storages
 django-import-export
+django-ajax-selects
