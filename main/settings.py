@@ -52,7 +52,6 @@ INSTALLED_APPS = [
     "jdatetime",
     "rangefilter",
     'import_export',
-    'ajax_select',
     "customadmin",
     "setting",
     "user",
