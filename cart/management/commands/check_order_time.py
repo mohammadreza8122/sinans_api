@@ -64,83 +64,85 @@ class Command(BaseCommand):
         
         # Iterate through the orders
         for order in orders:
-            if order.order.due_date_time:
+            try:
+                if order.order.due_date_time:
                 
-                # Check if the order is less than 4 hours to its date
-                now = timezone.localtime(timezone.now(), timezone.get_default_timezone())
-                local_order_time = (localtime(order.order.due_date_time))
-                time_delta_order = timedelta(hours=local_order_time.hour,minutes=local_order_time.minute,seconds=local_order_time.second)
-                time_delta_now = timedelta(hours=now.hour,minutes=now.minute,seconds=now.second)
-                time_since_due = time_delta_order - time_delta_now
-                
-                user = order.order.user
-                company = order.company
-              
-                # Create a UserMessage object
-                georgian_date = localtime(order.order.due_date_time) - now
-                today = timezone.now().day
-                
-                if order.order.date_created.day != today and order.order.due_date_time.day == today:
-                    
+                    now = timezone.localtime(timezone.now(), timezone.get_default_timezone())
+                    local_order_time = (localtime(order.order.due_date_time))
+                    time_delta_order = timedelta(hours=local_order_time.hour,minutes=local_order_time.minute,seconds=local_order_time.second)
+                    time_delta_now = timedelta(hours=now.hour,minutes=now.minute,seconds=now.second)
+                    time_since_due = time_delta_order - time_delta_now
 
-                    if (  ((time_delta_order - time_delta_now) < timedelta(hours=4,minutes=10))
-                            and ((time_delta_order - time_delta_now) > timedelta(hours=3, minutes=50)) and order.sms_send_company_admin ):
-                        
-                        
-                        if (
-                            order.status == "ongoing"
-                            and not order.sms_send_admin_for_onmission
-                        ):
-                            
-                            city_managers = CityManager.objects.filter(city=user.city)
-                            order.sms_send_admin_for_onmission = True
-                            order.save()
-                            for manager in city_managers:
-                                if manager.allowed_categories.exists():
-                                    categories = chain_allowed_categories(manager.allowed_categories.all())
-                                    if categories and order.service.service.category in categories:
+                    user = order.order.user
+                    company = order.company
 
-                                        for order_item in order.order.orderitem_set.all():
-                                            service_category = order_item.service.service.category
-                                            if service_category in categories:
-                                                UserMessage.objects.create(
-                                                    user=manager.user,
-                                                    title="پیگیری اعزام نیرو",
-                                                    text=f"وضعیت سفارش با کد پیگیری {order.order.pay_token} که کمتر از {strftime('%H:%M:%S', gmtime(time_since_due.total_seconds()))} هنوز تغییر نکرده",
-                                                )
-                                                ss = send_msgg(
-                                                    manager.user.number,
-                                                    order.order.pay_token,
-                                                    strftime("%H:%M:%S", gmtime(georgian_date.total_seconds())),
-                                                )
-                    if (
-                       
-                        (time_delta_order - time_delta_now < timedelta(hours=4,minutes=10))
-                        and (time_delta_order - time_delta_now > timedelta(hours=3, minutes=40)) and not order.sms_send_company_admin
-                    ):
-                        
-                        
-                        managers = CompanyManager.objects.filter(company=company)
-                        if not order.sms_send_company_admin:
-                            for manager in managers:
+                    # Create a UserMessage object
+                    georgian_date = localtime(order.order.due_date_time) - now
+                    today = timezone.now().day
 
-                                UserMessage.objects.create(
-                                    user=manager.user,
-                                    title="خدمات پیش رو",
-                                    text=f"سفارش با کد {order.order.pay_token} در کمتر از  {strftime('%H:%M:%S', gmtime(georgian_date.total_seconds()))} ساعت به موعد انجام می رسد",
-                                )
+                    if order.order.date_created.day != today and order.order.due_date_time.day == today:
 
-                                s = send_msg(
-                                    manager.user.number,
-                                    order.order.pay_token,
-                                    strftime("%H:%M:%S", gmtime(georgian_date.total_seconds())),
-                                )
 
-                                order.sms_send_company_admin = True
-                                
+                        if (  ((time_delta_order - time_delta_now) < timedelta(hours=4,minutes=10))
+                                and ((time_delta_order - time_delta_now) > timedelta(hours=3, minutes=50)) and order.sms_send_company_admin ):
+
+
+                            if (
+                                order.status == "ongoing"
+                                and not order.sms_send_admin_for_onmission
+                            ):
+
+                                city_managers = CityManager.objects.filter(city=user.city)
+                                order.sms_send_admin_for_onmission = True
                                 order.save()
-                            
-                                        
+                                for manager in city_managers:
+                                    if manager.allowed_categories.exists():
+                                        categories = chain_allowed_categories(manager.allowed_categories.all())
+                                        if categories and order.service.service.category in categories:
+
+                                            for order_item in order.order.orderitem_set.all():
+                                                service_category = order_item.service.service.category
+                                                if service_category in categories:
+                                                    UserMessage.objects.create(
+                                                        user=manager.user,
+                                                        title="پیگیری اعزام نیرو",
+                                                        text=f"وضعیت سفارش با کد پیگیری {order.order.pay_token} که کمتر از {strftime('%H:%M:%S', gmtime(time_since_due.total_seconds()))} هنوز تغییر نکرده",
+                                                    )
+                                                    ss = send_msgg(
+                                                        manager.user.number,
+                                                        order.order.pay_token,
+                                                        strftime("%H:%M:%S", gmtime(georgian_date.total_seconds())),
+                                                    )
+                        if (
+
+                            (time_delta_order - time_delta_now < timedelta(hours=4,minutes=10))
+                            and (time_delta_order - time_delta_now > timedelta(hours=3, minutes=40)) and not order.sms_send_company_admin
+                        ):
+
+
+                            managers = CompanyManager.objects.filter(company=company)
+                            if not order.sms_send_company_admin:
+                                for manager in managers:
+
+                                    UserMessage.objects.create(
+                                        user=manager.user,
+                                        title="خدمات پیش رو",
+                                        text=f"سفارش با کد {order.order.pay_token} در کمتر از  {strftime('%H:%M:%S', gmtime(georgian_date.total_seconds()))} ساعت به موعد انجام می رسد",
+                                    )
+
+                                    s = send_msg(
+                                        manager.user.number,
+                                        order.order.pay_token,
+                                        strftime("%H:%M:%S", gmtime(georgian_date.total_seconds())),
+                                    )
+
+                                    order.sms_send_company_admin = True
+
+                                    order.save()
+
+            except Exception as e:
+                print('eeeeeeee  ======>>>>>    ', e)
+                continue
 
 
 

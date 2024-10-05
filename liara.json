@@ -18,5 +18,10 @@
       "name": "media",
       "mountTo": "media"
     }
+  ],
+  "cron": [
+    "python manage.py check_order_time_notif",
+    "python manage.py check_order_time"
+
   ]
 }
