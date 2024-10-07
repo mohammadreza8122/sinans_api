@@ -1,0 +1,14 @@
+#autocomplete-input {
+    width: 100%;
+    height: 50px;
+    font-size: 19px;
+}
+
+.select2-container--default .select2-selection--single {
+    height: 40px !important;
+    line-height: 40px !important;
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    padding-top: 50px;
+}

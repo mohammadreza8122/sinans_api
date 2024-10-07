@@ -15,8 +15,9 @@ from .views import (
     CompanyServicePriceRetrieveUpdateDestroyAPIView,
     CompanyShortServicePriceListAPIView,
 )
+from service.autocomplete import YourModelAutocomplete
 
-app_name = "service"
+# app_name = "service"
 
 urlpatterns = [
     path("cities", CityListAPIView.as_view()),
@@ -35,4 +36,10 @@ urlpatterns = [
     path("company-service-prices/add", CompanyAddServicePriceAPIView.as_view()),
     path("company-service-prices/<int:pk>", CompanyServicePriceRetrieveUpdateDestroyAPIView.as_view()),
     path("company-service-prices/list", CompanyShortServicePriceListAPIView.as_view()),
+    path(
+        'category-autocomplete/',
+        YourModelAutocomplete.as_view(),
+        name='category-autocomplete',
+    ),
+
 ]

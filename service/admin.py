@@ -9,9 +9,9 @@ from .models import (
     ServiceExtraInfo,
 )
 from django.utils.html import format_html
-from django.utils.numberformat import format
 from django.contrib.admin.models import LogEntry, ADDITION
 from django.contrib.contenttypes.models import ContentType
+
 
 
 class CityInline(admin.TabularInline):
@@ -81,8 +81,20 @@ class HomeCareServiceAdmin(admin.ModelAdmin):
 @admin.register(HomeCareCategory)
 class HomeCareCategoryAdmin(admin.ModelAdmin):
     list_display = ("title", "father")
-    search_fields = ("title", "father")
+    search_fields = ("title",)
     raw_id_fields = ('father',)
+
+    class Media:
+        js = (
+            'https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js',
+            'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
+            'autocomplete.js',)
+        css = {
+            'all': (
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
+                'search_bar.css'
+            )
+        }
 
 
 @admin.register(HomeCareServicePrice)
