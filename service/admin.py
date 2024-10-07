@@ -87,7 +87,7 @@ class HomeCareCategoryAdmin(admin.ModelAdmin):
 
 @admin.register(HomeCareServicePrice)
 class HomeCareServicePriceAdmin(admin.ModelAdmin):
-    list_display = ("service", "city", "price_display")
+    list_display = ("service", "city", "company", "price_display")
     list_filter = ("service", "city","company")
 
 
