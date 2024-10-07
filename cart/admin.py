@@ -187,25 +187,25 @@ class HomeCareOrderAdmin(ModelAdminJalaliMixin,admin.ModelAdmin):
         "is_paid",
         "is_done",
     )
-    list_filter = (
-        "user",
-        "status",
-        "ordered_companies",
-        "date_created"
-    )
-    search_fields = ("pay_token",)
     # list_filter = (
     #     "user",
     #     "status",
     #     "ordered_companies",
-    #     "date_created",
-    #     (
-    #         "date_created",
-    #         DateRangeFilterBuilder(
-    #             title="بازه دلخواه",
-    #         ),
-    #     ),
+    #     "date_created"
     # )
+    search_fields = ("pay_token",)
+    list_filter = (
+        "user",
+        "status",
+        "ordered_companies",
+        "date_created",
+        (
+            "date_created",
+            DateRangeFilterBuilder(
+                title="بازه دلخواه",
+            ),
+        ),
+    )
     #
     class DateCreatedFilter(SimpleListFilter):
         title = "تاریخ ثبت درخواست"
