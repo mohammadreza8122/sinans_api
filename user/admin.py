@@ -201,8 +201,19 @@ class UserAddressAdmin(admin.ModelAdmin):
 
 @admin.register(UserMessage)
 class UserMessageAdmin(admin.ModelAdmin):
-    list_display = ("user", "title", "is_checked", "date_created")
+    list_display = ("user", "title", "is_checked", "jalali")
     list_filter = ("user", "date_created")
+
+    def jalali(self, obj):
+        date_created = obj.date_created
+
+        date_created_tehran = date_created.astimezone(pytz.timezone('Asia/Tehran'))
+
+        jalali_date = jdatetime.datetime.fromgregorian(datetime=date_created_tehran)
+
+        return f"{jalali_date.strftime('%H:%M')} - {jalali_date.strftime('%Y/%m/%d')}"
+
+    jalali.short_description = "تاریخ ارسال"
 
 
 def export_as_csv(modeladmin, request, queryset):

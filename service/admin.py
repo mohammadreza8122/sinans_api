@@ -46,8 +46,8 @@ class HomeCareServiceAdmin(admin.ModelAdmin):
     readonly_fields = ['created_by',]
 
     list_display = ("title", "category", "is_active", "is_deleted")
-    search_fields = ("title", "category")
-    # list_filter = ("title", "category")
+    search_fields = ("title",)
+    list_filter = ("category", )
     actions = ("delete_services",)
     raw_id_fields = ('category',)
     inlines = [ServiceFAQInline, ServiceExtraInfoInline]

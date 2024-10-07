@@ -27,7 +27,7 @@ class CartItemInline(admin.TabularInline):
     model = CartItem
     extra = 0
     fields = ['quantity', 'service']
-    readonly_fields = ['service', ]
+    readonly_fields = ['service', 'quantity']
 
 
 @admin.register(Cart)
