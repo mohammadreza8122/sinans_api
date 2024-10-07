@@ -102,6 +102,7 @@ class CustomUserAdmin(UserAdmin):
         "__str__",
         "first_name",
         "last_name",
+        "first_company",
         "is_staff",
         "jalali",
     )
@@ -151,6 +152,8 @@ class CustomUserAdmin(UserAdmin):
     readonly_fields = ("register_code",)
     ordering = ("-date_joined",)
     actions = ("generate_qr_code",)
+    search_fields = ("number", "first_name", "last_name", "first_company__title",)
+    list_filter = ("first_company","company" ,"is_staff", "is_superuser", "is_active", "groups")
     form = CustomUserChangeForm
 
     def jalali(self, obj):
