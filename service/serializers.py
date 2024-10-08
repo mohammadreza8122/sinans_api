@@ -170,3 +170,24 @@ class CategorySearchSerializer(serializers.ModelSerializer):
 
     def get_text(self, obj):
         return obj.title
+
+
+class ServicesSearchSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    selected_text = serializers.SerializerMethodField()
+    text = serializers.SerializerMethodField()
+
+    class Meta:
+        model = HomeCareService
+        fields = ('id', 'title', 'name', 'selected_text', 'text')
+
+
+    def get_name(self, obj):
+        return obj.title
+
+
+    def get_selected_text(self, obj):
+        return obj.title
+
+    def get_text(self, obj):
+        return obj.title

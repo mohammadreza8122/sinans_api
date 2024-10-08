@@ -15,9 +15,10 @@ from .views import (
     CompanyServicePriceRetrieveUpdateDestroyAPIView,
     CompanyShortServicePriceListAPIView,
     CategoryAjaxSearchApi,
+    ServiceAjaxSearchApi,
 )
 
-# app_name = "service"
+app_name = "service"
 
 urlpatterns = [
     path("cities", CityListAPIView.as_view()),
@@ -36,10 +37,7 @@ urlpatterns = [
     path("company-service-prices/add", CompanyAddServicePriceAPIView.as_view()),
     path("company-service-prices/<int:pk>", CompanyServicePriceRetrieveUpdateDestroyAPIView.as_view()),
     path("company-service-prices/list", CompanyShortServicePriceListAPIView.as_view()),
-    path(
-        'category-autocomplete/',
-        CategoryAjaxSearchApi.as_view(),
-        name='category-autocomplete',
-    ),
+    path('category-autocomplete/', CategoryAjaxSearchApi.as_view(), name='category-autocomplete'),
+    path('service-autocomplete/', ServiceAjaxSearchApi.as_view(), name='service-autocomplete'),
 
 ]

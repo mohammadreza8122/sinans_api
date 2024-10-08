@@ -29,7 +29,9 @@ from .serializers import (
     HomeCareServicePriceSerializer,
     ShortServiceSerializer,
     ShortServicePriceSerializer,
-    DetailServiceSerializer, CategorySearchSerializer,
+    DetailServiceSerializer,
+    CategorySearchSerializer,
+    ServicesSearchSerializer,
 )
 from user.models import HomeCareCompany, CompanyManager, CityManager
 from django.db.models import Q
@@ -582,5 +584,18 @@ class CategoryAjaxSearchApi(APIView):
 
 
         data = CategorySearchSerializer(categories, many=True).data
+        return Response({"query": search_param,"results": data})
+
+
+class ServiceAjaxSearchApi(APIView):
+    def get(self, request):
+        services = HomeCareService.objects.all()
+
+        search_param = request.GET.get('q', None)
+        if search_param:
+            services = services.filter(title__icontains=search_param)
+
+
+        data = ServicesSearchSerializer(services, many=True).data
         return Response({"query": search_param,"results": data})
 

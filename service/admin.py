@@ -77,6 +77,18 @@ class HomeCareServiceAdmin(admin.ModelAdmin):
     created_by.short_description = "ایحاد شده توسط"
 
 
+    class Media:
+        js = (
+            'https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js',
+            'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
+            'autocomplete/service.js',)
+        css = {
+            'all': (
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
+            )
+        }
+
+
 
 @admin.register(HomeCareCategory)
 class HomeCareCategoryAdmin(admin.ModelAdmin):
@@ -88,7 +100,7 @@ class HomeCareCategoryAdmin(admin.ModelAdmin):
         js = (
             'https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js',
             'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
-            'autocomplete.js',)
+            'autocomplete/category.js',)
         css = {
             'all': (
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
