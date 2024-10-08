@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
         console.error("Select2 is not loaded. Please check the CDN or file path.");
         return;
     }
-
+    let searchValue = ''
     const searchInput = document.querySelector('input[name=q]');
     if (searchInput) {
         searchInput.setAttribute('id', 'autocomplete-input');
@@ -18,6 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     };
                 },
                 processResults: function (data) {
+                    searchValue = data.query
                     return {
                         results: data.results.slice(0, 100) // محدود به 10 نتیجه
                     };
@@ -38,8 +39,23 @@ document.addEventListener('DOMContentLoaded', function() {
         $('#autocomplete-input').css({
             'width': '100%',
             'height': '70px',
-            'font-size': '26px'
+            'font-size': '206px'
+        });
+        $('#autocomplete-input').on('select2:select', function (e) {
+            const selectedValue = e.params.data.id;
+            const searchUrl = window.location.origin + window.location.pathname + selectedValue + '/change/';
+            window.location.href = searchUrl;
         });
 
+        const searchButton = document.getElementsByClassName('btn btn-outline-primary');
+        for (let i = 0; i < searchButton.length; i++) {
+        searchButton[i].addEventListener('click', function() {
+            event.preventDefault();
+            const searchUrl = window.location.origin + window.location.pathname + '?q=' + searchValue ;
+            window.location.href = searchUrl;
+        });
     }
+}
 });
+
+

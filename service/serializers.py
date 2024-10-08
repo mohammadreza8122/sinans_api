@@ -149,3 +149,24 @@ class ShortServicePriceSerializer(serializers.ModelSerializer):
     class Meta:
         model = HomeCareServicePrice
         fields = "__all__"
+
+
+class CategorySearchSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    selected_text = serializers.SerializerMethodField()
+    text = serializers.SerializerMethodField()
+
+    class Meta:
+        model = HomeCareCategory
+        fields = ('id', 'title', 'name', 'selected_text', 'text')
+
+
+    def get_name(self, obj):
+        return obj.title
+
+
+    def get_selected_text(self, obj):
+        return obj.title
+
+    def get_text(self, obj):
+        return obj.title

@@ -14,8 +14,8 @@ from .views import (
     CompanyShortServiceListAPIView,
     CompanyServicePriceRetrieveUpdateDestroyAPIView,
     CompanyShortServicePriceListAPIView,
+    CategoryAjaxSearchApi,
 )
-from service.autocomplete import YourModelAutocomplete
 
 # app_name = "service"
 
@@ -38,7 +38,7 @@ urlpatterns = [
     path("company-service-prices/list", CompanyShortServicePriceListAPIView.as_view()),
     path(
         'category-autocomplete/',
-        YourModelAutocomplete.as_view(),
+        CategoryAjaxSearchApi.as_view(),
         name='category-autocomplete',
     ),
 

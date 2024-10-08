@@ -7,6 +7,8 @@ from rest_framework.generics import (
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.views import APIView
+
 from .permissions import IsCityManager, IsManager, IsCompanyManager
 from rest_framework.filters import SearchFilter, OrderingFilter
 from .pagination import CustomLimitPagination
@@ -27,7 +29,7 @@ from .serializers import (
     HomeCareServicePriceSerializer,
     ShortServiceSerializer,
     ShortServicePriceSerializer,
-    DetailServiceSerializer,
+    DetailServiceSerializer, CategorySearchSerializer,
 )
 from user.models import HomeCareCompany, CompanyManager, CityManager
 from django.db.models import Q
@@ -567,3 +569,18 @@ class CompanyShortServicePriceListAPIView(ListAPIView):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+
+class CategoryAjaxSearchApi(APIView):
+    def get(self, request):
+        categories = HomeCareCategory.objects.all()
+
+        search_param = request.GET.get('q', None)
+        if search_param:
+            categories = categories.filter(title__icontains=search_param)
+
+
+        data = CategorySearchSerializer(categories, many=True).data
+        return Response({"query": search_param,"results": data})
+
