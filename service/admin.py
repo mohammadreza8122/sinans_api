@@ -1,3 +1,5 @@
+from venv import create
+
 from django.contrib import admin
 from .models import (
     HomeCareService,
@@ -45,7 +47,7 @@ class CityAdmin(admin.ModelAdmin):
 class HomeCareServiceAdmin(admin.ModelAdmin):
     readonly_fields = ['created_by',]
 
-    list_display = ("title", "category", "is_active", "is_deleted")
+    list_display = ("title", "category", "is_active", "is_deleted", 'created_by')
     search_fields = ("title",)
     list_filter = ("category", )
     actions = ("delete_services",)
@@ -70,9 +72,16 @@ class HomeCareServiceAdmin(admin.ModelAdmin):
         log = LogEntry.objects.filter(object_id=instance.id,
                                        content_type_id = ContentType.objects.get_for_model(instance).pk,
                                        action_flag     = ADDITION).first()
-        create_by = format_html('<a class="btn btn-info" href="/admin/user/user/{}/change/">{} {}</a>'.format(
-            log.user.pk, log.user.first_name, log.user.last_name
-        ))
+
+        if log.user.first_name and log.user.last_name:
+            create_by = format_html('<a  href="/admin/user/user/{}/change/">{} {}</a>'.format(
+                log.user.pk, log.user.first_name, log.user.last_name
+            ))
+
+        else:
+            create_by = format_html('<a href="/admin/user/user/{}/change/">{}</a>'.format(
+                log.user.pk, log.user.number,
+            ))
         return create_by
     created_by.short_description = "ایحاد شده توسط"
 
