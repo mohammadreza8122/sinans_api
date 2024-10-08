@@ -49,7 +49,7 @@ class HomeCareServiceAdmin(admin.ModelAdmin):
 
     list_display = ("title", "category", "is_active", "is_deleted", 'created_by')
     search_fields = ("title",)
-    list_filter = ("category", )
+    list_filter = ("category__title", )
     actions = ("delete_services",)
     raw_id_fields = ('category',)
     inlines = [ServiceFAQInline, ServiceExtraInfoInline]
@@ -101,9 +101,10 @@ class HomeCareServiceAdmin(admin.ModelAdmin):
 
 @admin.register(HomeCareCategory)
 class HomeCareCategoryAdmin(admin.ModelAdmin):
-    list_display = ("title", "father")
+    list_display = ("title", "father", "created_by")
     search_fields = ("title",)
     raw_id_fields = ('father',)
+    readonly_fields = ("created_by", )
 
     class Media:
         js = (
@@ -114,6 +115,37 @@ class HomeCareCategoryAdmin(admin.ModelAdmin):
             'all': (
                 'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
                 'search_bar.css'
+            )
+        }
+
+    def created_by(self, instance):
+        log = LogEntry.objects.filter(object_id=instance.id,
+                                       content_type_id = ContentType.objects.get_for_model(instance).pk,
+                                       action_flag     = ADDITION).first()
+        if not log:
+            return ''
+
+        if log.user.first_name and log.user.last_name:
+            create_by = format_html('<a  href="/admin/user/user/{}/change/">{} {}</a>'.format(
+                log.user.pk, log.user.first_name, log.user.last_name
+            ))
+
+        else:
+            create_by = format_html('<a href="/admin/user/user/{}/change/">{}</a>'.format(
+                log.user.pk, log.user.number,
+            ))
+        return create_by
+    created_by.short_description = "ایحاد شده توسط"
+
+
+    class Media:
+        js = (
+            'https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js',
+            'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
+            'autocomplete/service.js',)
+        css = {
+            'all': (
+                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
             )
         }
 
