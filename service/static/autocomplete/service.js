@@ -4,12 +4,21 @@ document.addEventListener('DOMContentLoaded', function() {
         return;
     }
     let searchValue = ''
+    console.log(window.location.pathname)
+    console.log('*********************88')
+    const page_path  = window.location.pathname
+    if (page_path.includes('homecarecategory')) {
+                end_point = '/service/category-autocomplete/';
+    } else {
+         end_point = '/service/service-autocomplete/';
+    }
+    console.log(end_point)
     const searchInput = document.querySelector('input[name=q]');
     if (searchInput) {
         searchInput.setAttribute('id', 'autocomplete-input');
         $('#autocomplete-input').select2({
             ajax: {
-                url: '/service/service-autocomplete/',  // آدرس ویو autocomplete
+                url: end_point,  // آدرس ویو autocomplete
                 dataType: 'json',
                 delay: 500,  // دیبونس با 500 میلی‌ثانیه
                 data: function (params) {
