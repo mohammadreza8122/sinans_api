@@ -60,9 +60,21 @@ document.addEventListener('DOMContentLoaded', function() {
         for (let i = 0; i < searchButton.length; i++) {
         searchButton[i].addEventListener('click', function() {
             event.preventDefault();
-            const searchUrl = window.location.origin + window.location.pathname + '?q=' + searchValue ;
+            params.set('q', searchValue);
+            const searchUrl = window.location.origin + window.location.pathname + '?' + params.toString();
             window.location.href = searchUrl;
         });
+
+
+
+
+
+
+
+
+
+
+
     }
 }
 });
