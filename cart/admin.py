@@ -1,6 +1,6 @@
 from django.contrib import admin
 import jdatetime
-from .models import Cart, CartItem, HomeCareOrder,OrderItem
+from .models import Cart, CartItem, HomeCareOrder, OrderItem
 import csv
 from django.http import HttpResponse
 from django.contrib.admin.filters import SimpleListFilter
@@ -36,8 +36,8 @@ class CartAdmin(admin.ModelAdmin):
     list_display = ("__str__", "is_ordered")
     # list_filter = ("user",)
 
-def generate_invoice_excel(modeladmin, request, queryset):
 
+def generate_invoice_excel(modeladmin, request, queryset):
     response = HttpResponse(content_type="text/csv; charset=utf-8-sig")
     response["Content-Disposition"] = 'attachment; filename="invoices.csv"'
 
@@ -56,41 +56,44 @@ def generate_invoice_excel(modeladmin, request, queryset):
 
     total_cost = 0
     for order in queryset:
-        user_name = (
-            order.user.username
-            if order.user.username
-            else order.user.number or order.user.username
-        )
-        company = ", ".join(
-            [item.company.title for item in order.orderitem_set.all()]
-        )
-        due_date_time = (
-            jdatetime.datetime.fromgregorian(datetime=order.date_created).strftime(
-                "%Y/%m/%d %H:%M:%S"
+        try:
+            user_name = (
+                order.user.username
+                if order.user.username
+                else order.user.number or order.user.username
             )
-            if order.date_created
-            else ""
-        )
-        city_name = order.city.title if order.city else ""
-        pay_token = order.pay_token if order.pay_token else ""
-        final_price = order.final_price
+            company = ", ".join(
+                [item.company.title for item in order.orderitem_set.all()]
+            )
+            due_date_time = (
+                jdatetime.datetime.fromgregorian(datetime=order.date_created).strftime(
+                    "%Y/%m/%d %H:%M:%S"
+                )
+                if order.date_created
+                else ""
+            )
+            city_name = order.city.title if order.city else ""
+            pay_token = order.pay_token if order.pay_token else ""
+            final_price = order.final_price
 
-        services = ", ".join(
-            [item.service.service.title for item in order.orderitem_set.all()]
-        )
+            services = ", ".join(
+                [item.service.service.title for item in order.orderitem_set.all()]
+            )
 
-        writer.writerow(
-            [
-                user_name,
-                company,
-                due_date_time,
-                city_name,
-                pay_token,
-                final_price,
-                services,
-            ]
-        )
-        total_cost += final_price
+            writer.writerow(
+                [
+                    user_name,
+                    company,
+                    due_date_time,
+                    city_name,
+                    pay_token,
+                    final_price,
+                    services,
+                ]
+            )
+            total_cost += final_price
+        except:
+            continue
 
     writer.writerow(
         [
@@ -123,7 +126,6 @@ def generate_invoice_excel(modeladmin, request, queryset):
 
 
 def export_as_csv(modeladmin, request, queryset):
-   
     response = HttpResponse(content_type="text/csv; charset=utf-8-sig")
     response["Content-Disposition"] = 'attachment; filename="export.csv"'
 
@@ -166,14 +168,15 @@ def export_as_csv(modeladmin, request, queryset):
 
     return response
 
+
 class HomeCareOrderInline(admin.StackedInline):
     model = OrderItem
     readonly_fields = ("service",)
     extra = 1
 
-    
+
 @admin.register(HomeCareOrder)
-class HomeCareOrderAdmin(ModelAdminJalaliMixin,admin.ModelAdmin):
+class HomeCareOrderAdmin(ModelAdminJalaliMixin, admin.ModelAdmin):
     inlines = [HomeCareOrderInline]
 
     actions = [export_as_csv, generate_invoice_excel]
@@ -206,6 +209,7 @@ class HomeCareOrderAdmin(ModelAdminJalaliMixin,admin.ModelAdmin):
             ),
         ),
     )
+
     #
     class DateCreatedFilter(SimpleListFilter):
         title = "تاریخ ثبت درخواست"
@@ -248,7 +252,7 @@ class HomeCareOrderAdmin(ModelAdminJalaliMixin,admin.ModelAdmin):
                         date_created__gte=start_date, date_created__lt=end_date
                     )
             return queryset
-    
+
     def get_register_code(self, obj):
         return obj.user.register_code
 
