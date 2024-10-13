@@ -51,7 +51,7 @@ class HomeCareServiceAdmin(admin.ModelAdmin):
     search_fields = ("title",)
     list_filter = ("category__title", )
     actions = ("delete_services",)
-    raw_id_fields = ('category',)
+    # raw_id_fields = ('category',)
     inlines = [ServiceFAQInline, ServiceExtraInfoInline]
 
     @admin.action(description="حذف")
