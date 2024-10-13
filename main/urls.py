@@ -43,6 +43,8 @@ urlpatterns = (
         path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
 
         path("admin/", admin.site.urls),
+        path('ajax_select/', include('ajax_select.urls')),
+
         path('ckeditor/', include('ckeditor_uploader.urls')),
         path('service/', include('service.urls')),
         path('cart/', include('cart.urls')),

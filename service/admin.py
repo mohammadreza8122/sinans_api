@@ -13,6 +13,7 @@ from .models import (
 from django.utils.html import format_html
 from django.contrib.admin.models import LogEntry, ADDITION
 from django.contrib.contenttypes.models import ContentType
+from ajax_select import make_ajax_form
 
 
 
@@ -42,6 +43,45 @@ class CityAdmin(admin.ModelAdmin):
     list_display = ("title", "province")
     list_filter = ("title", "province")
 
+from ajax_select import register, LookupChannel
+from ajax_select.admin import AjaxSelectAdmin
+from service.models import HomeCareCategory
+from django.utils.html import escape
+from service.forms import HomeCareServiceAdminForm
+
+@register('categories')
+class CategoryLookup(LookupChannel):
+
+    model = HomeCareCategory
+
+    def get_query(self, q, request):
+        print('************************************')
+        return self.model.objects.filter(title__icontains=q)  # adjust the query as needed
+
+    def get_result(self, obj):
+        """Result is the simple text that is the completion of what the person typed."""
+        return obj.title
+
+    def format_match(self, obj):
+        html = [
+            "<div style='background-color: #f0fff0; padding: 10px; direction: rtl; text-align: right;'>"
+                "<span style='>"
+                    "{}"
+                "</span>"
+                "<br>"
+                "<span style='direction: rtl; text-align: right;'>"
+                    "{}"
+                "</span>"
+            "</div>"
+        ]
+        html = ''.join(html)
+
+        return format_html(html.format(obj.title, obj.father.title))
+        # return f"{escape(obj.title)}<div><i>{escape(obj.father.title)}</i></div><br>"
+
+    def format_item_display(self, obj):
+        return f"{escape(obj.title)}<div><i>{escape(obj.father.title)}</i></div>"
+
 
 @admin.register(HomeCareService)
 class HomeCareServiceAdmin(admin.ModelAdmin):
@@ -52,6 +92,8 @@ class HomeCareServiceAdmin(admin.ModelAdmin):
     list_filter = ("category__title", )
     actions = ("delete_services",)
     # raw_id_fields = ('category',)
+    # form = make_ajax_form(HomeCareService, {'category': 'categories'})  # Use the lookup name you registered
+    form = HomeCareServiceAdminForm
     inlines = [ServiceFAQInline, ServiceExtraInfoInline]
 
     @admin.action(description="حذف")

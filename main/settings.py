@@ -54,6 +54,8 @@ INSTALLED_APPS = [
     "jdatetime",
     "rangefilter",
     'import_export',
+    "ajax_select",
+    "django_select2",
     "customadmin",
     "setting",
     "user",
