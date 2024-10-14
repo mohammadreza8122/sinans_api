@@ -75,10 +75,14 @@ def generate_invoice_excel(modeladmin, request, queryset):
             city_name = order.city.title if order.city else ""
             pay_token = order.pay_token if order.pay_token else ""
             final_price = order.final_price
+            services = ""
 
-            services = ", ".join(
-                [item.service.service.title for item in order.orderitem_set.all()]
-            )
+            for item in order.orderitem_set.all():
+                try:
+                    services += f"{item.service.service.title}, "
+
+                except:
+                    continue
 
             writer.writerow(
                 [
