@@ -58,8 +58,8 @@ class CategoryLookup(LookupChannel):
 
     def format_match(self, obj):
         html = [
-            "<div style='background-color: #f0fff0; padding: 10px; direction: rtl; text-align: right;'>"
-                "<span style='direction: rtl; text-align: right;' >"
+            "<div style='background-color: #f0fff0; padding: 10px;  '>"
+                "<span >"
                     "{}"
                 "</span>"
                 "<br>"
@@ -70,8 +70,8 @@ class CategoryLookup(LookupChannel):
 
     def format_item_display(self, obj):
         html = [
-            "<div style='background-color: #f0fff0; padding: 10px; direction: rtl; text-align: right;'>"
-                "<span style='direction: rtl; text-align: right;' >"
+            "<div style='background-color: #f0fff0; padding: 10px;  '>"
+                "<span >"
                     "{}"
                 "</span>"
                 "<br>"
@@ -93,8 +93,8 @@ class CategoryyLookup(LookupChannel):
 
     def format_match(self, obj):
         html = [
-            "<div style='background-color: #f0fff0; padding: 10px; direction: rtl; text-align: right;'>"
-                "<span style='direction: rtl; text-align: right;' >"
+            "<div style='background-color: #f0fff0; padding: 10px;  '>"
+                "<span >"
                     "{}"
                 "</span>"
                 "<br>"
@@ -105,8 +105,8 @@ class CategoryyLookup(LookupChannel):
 
     def format_item_display(self, obj):
         html = [
-            "<div style='background-color: #f0fff0; padding: 10px; direction: rtl; text-align: right;'>"
-                "<span style='direction: rtl; text-align: right;' >"
+            "<div style='background-color: #f0fff0; padding: 10px;'>"
+                "<span >"
                     "{}"
                 "</span>"
                 "<br>"
