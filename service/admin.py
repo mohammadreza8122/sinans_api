@@ -81,6 +81,40 @@ class CategoryLookup(LookupChannel):
         return format_html(html.format(obj))
 
 
+@register('fathers')
+class CategoryyLookup(LookupChannel):
+    model = HomeCareCategory
+
+    def get_query(self, q, request):
+        return self.model.objects.filter(Q(title__icontains=q)  )[0:40]  # adjust the query as needed
+
+    def get_result(self, obj):
+        return obj.title
+
+    def format_match(self, obj):
+        html = [
+            "<div style='background-color: #f0fff0; padding: 10px; direction: rtl; text-align: right;'>"
+                "<span style='direction: rtl; text-align: right;' >"
+                    "{}"
+                "</span>"
+                "<br>"
+            "</div>"
+        ]
+        html = ''.join(html)
+        return format_html(html.format(obj))
+
+    def format_item_display(self, obj):
+        html = [
+            "<div style='background-color: #f0fff0; padding: 10px; direction: rtl; text-align: right;'>"
+                "<span style='direction: rtl; text-align: right;' >"
+                    "{}"
+                "</span>"
+                "<br>"
+            "</div>"
+        ]
+        html = ''.join(html)
+        return format_html(html.format(obj))
+
 @admin.register(HomeCareService)
 class HomeCareServiceAdmin(AjaxSelectAdmin):
     readonly_fields = ['created_by',]
@@ -140,8 +174,9 @@ class HomeCareServiceAdmin(AjaxSelectAdmin):
 class HomeCareCategoryAdmin(admin.ModelAdmin):
     list_display = ("title", "father", "created_by")
     search_fields = ("title",)
-    raw_id_fields = ('father',)
     readonly_fields = ("created_by", )
+    form = make_ajax_form(HomeCareCategory, {'father': 'fathers'})  # Use the lookup name you registered
+
 
     class Media:
         js = (
