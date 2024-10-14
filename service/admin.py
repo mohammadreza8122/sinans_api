@@ -14,7 +14,10 @@ from django.utils.html import format_html
 from django.contrib.admin.models import LogEntry, ADDITION
 from django.contrib.contenttypes.models import ContentType
 from ajax_select import make_ajax_form
-
+from ajax_select import register, LookupChannel
+from ajax_select.admin import AjaxSelectAdmin
+from service.models import HomeCareCategory
+from django.db.models import Q
 
 
 class CityInline(admin.TabularInline):
@@ -43,57 +46,49 @@ class CityAdmin(admin.ModelAdmin):
     list_display = ("title", "province")
     list_filter = ("title", "province")
 
-from ajax_select import register, LookupChannel
-from ajax_select.admin import AjaxSelectAdmin
-from service.models import HomeCareCategory
-from django.utils.html import escape
-from service.forms import HomeCareServiceAdminForm
-
 @register('categories')
 class CategoryLookup(LookupChannel):
-
     model = HomeCareCategory
 
     def get_query(self, q, request):
-        print('************************************')
-        return self.model.objects.filter(title__icontains=q)  # adjust the query as needed
+        return self.model.objects.filter(Q(title__icontains=q) | Q(father__title__icontains=q) )[0:40]  # adjust the query as needed
 
     def get_result(self, obj):
-        """Result is the simple text that is the completion of what the person typed."""
         return obj.title
 
     def format_match(self, obj):
         html = [
             "<div style='background-color: #f0fff0; padding: 10px; direction: rtl; text-align: right;'>"
-                "<span style='>"
+                "<span style='direction: rtl; text-align: right;' >"
                     "{}"
                 "</span>"
                 "<br>"
-                "<span style='direction: rtl; text-align: right;'>"
-                    "{}"
-                "</span>"
             "</div>"
         ]
         html = ''.join(html)
-
-        return format_html(html.format(obj.title, obj.father.title))
-        # return f"{escape(obj.title)}<div><i>{escape(obj.father.title)}</i></div><br>"
+        return format_html(html.format(obj))
 
     def format_item_display(self, obj):
-        return f"{escape(obj.title)}<div><i>{escape(obj.father.title)}</i></div>"
+        html = [
+            "<div style='background-color: #f0fff0; padding: 10px; direction: rtl; text-align: right;'>"
+                "<span style='direction: rtl; text-align: right;' >"
+                    "{}"
+                "</span>"
+                "<br>"
+            "</div>"
+        ]
+        html = ''.join(html)
+        return format_html(html.format(obj))
 
 
 @admin.register(HomeCareService)
-class HomeCareServiceAdmin(admin.ModelAdmin):
+class HomeCareServiceAdmin(AjaxSelectAdmin):
     readonly_fields = ['created_by',]
-
     list_display = ("title", "category", "is_active", "is_deleted", 'created_by')
     search_fields = ("title",)
-    list_filter = ("category__title", )
+    list_filter = ("category", )
     actions = ("delete_services",)
-    # raw_id_fields = ('category',)
-    # form = make_ajax_form(HomeCareService, {'category': 'categories'})  # Use the lookup name you registered
-    form = HomeCareServiceAdminForm
+    form = make_ajax_form(HomeCareService, {'category': 'categories'})  # Use the lookup name you registered
     inlines = [ServiceFAQInline, ServiceExtraInfoInline]
 
     @admin.action(description="حذف")
