@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     "django_filters",
     "corsheaders",
     "drf_yasg",
+    'treebeard',
     'storages',
     'location_field.apps.DefaultConfig',
     "jdatetime",
@@ -65,6 +66,7 @@ INSTALLED_APPS = [
     "about",
     "contact",
     "jalali_date",
+    'category',
 ]
 
 MIDDLEWARE = [
