@@ -116,13 +116,13 @@ class CategoryyLookup(LookupChannel):
         return format_html(html.format(obj))
 
 @admin.register(HomeCareService)
-class HomeCareServiceAdmin(AjaxSelectAdmin):
-    readonly_fields = ['created_by',]
-    list_display = ("title", "category", "is_active", "is_deleted", 'created_by')
+class HomeCareServiceAdmin(admin.ModelAdmin):
+    readonly_fields = ['created_by', 'category']
+    list_display = ("title", "category_new", "is_active", "is_deleted", 'created_by')
     search_fields = ("title",)
-    list_filter = ("category", )
+    list_filter = ("category_new", )
     actions = ("delete_services",)
-    form = make_ajax_form(HomeCareService, {'category': 'categories'})  # Use the lookup name you registered
+
     inlines = [ServiceFAQInline, ServiceExtraInfoInline]
 
     @admin.action(description="حذف")
@@ -157,17 +157,6 @@ class HomeCareServiceAdmin(AjaxSelectAdmin):
     created_by.short_description = "ایحاد شده توسط"
 
 
-    class Media:
-        js = (
-            'https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js',
-            'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
-            'autocomplete/service.js',)
-        css = {
-            'all': (
-                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
-            )
-        }
-
 
 
 @admin.register(HomeCareCategory)
@@ -175,20 +164,7 @@ class HomeCareCategoryAdmin(admin.ModelAdmin):
     list_display = ("title", "father", "created_by")
     search_fields = ("title",)
     readonly_fields = ("created_by", )
-    form = make_ajax_form(HomeCareCategory, {'father': 'fathers'})  # Use the lookup name you registered
 
-
-    class Media:
-        js = (
-            'https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js',
-            'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
-            'autocomplete/category.js',)
-        css = {
-            'all': (
-                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
-                'search_bar.css'
-            )
-        }
 
     def created_by(self, instance):
         log = LogEntry.objects.filter(object_id=instance.id,
@@ -208,18 +184,6 @@ class HomeCareCategoryAdmin(admin.ModelAdmin):
             ))
         return create_by
     created_by.short_description = "ایحاد شده توسط"
-
-
-    class Media:
-        js = (
-            'https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js',
-            'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js',
-            'autocomplete/service.js',)
-        css = {
-            'all': (
-                'https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css',
-            )
-        }
 
 
 @admin.register(HomeCareServicePrice)

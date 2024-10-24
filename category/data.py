@@ -2,53 +2,14 @@
 from category.models import Category
 import json
 from django.conf import settings
+from category.models import Category
+import json
+
+from service.models import HomeCareCategory, HomeCareService
+
 with open(f'{settings.BASE_DIR}/category/categories_hierarchy.json', 'r', encoding='utf-8') as f:
     data = json.load(f)
 
-def bad(data):
-    Category.objects.all().delete()
-    for d in data:
-        print(d)
-        category = Category.add_root(title=d['title'], slug=d['slug'])
-        if d['children']:
-            for c in d['children']:
-                c_category= category.add_child(title=c['title'], slug=c['slug'])
-
-                if c['children']:
-                    for b in c['children']:
-                        b_category = c_category.add_child(title=b['title'], slug=b['slug'])
-
-                        if b['children']:
-                            for f in b['children']:
-                                f_category = b_category.add_child(title=f['title'], slug=f['slug'])
-
-                                if f['children']:
-                                    for o in f['children']:
-                                        o_category = f_category.add_child(title=o['title'], slug=o['slug'])
-
-                                        if o['children']:
-                                            for p in o['children']:
-                                                p_category = o_category.add_child(title=p['title'], slug=p['slug'])
-
-                                                if p['children']:
-                                                    for j in p['children']:
-                                                        j_category = p_category.add_child(title=j['title'], slug=j['slug'])
-
-                                                        if j['children']:
-                                                            for l in j['children']:
-                                                                l_category = j_category.add_child(title=l['title'],
-                                                                                                  slug=l['slug'])
-
-                                                                if l['children']:
-                                                                    for r in l['children']:
-                                                                        r_category = l_category.add_child(title=r['title'],
-                                                                                                          slug=r['slug'])
-
-
-
-Category.objects.all().delete()
-from category.models import Category
-import json
 
 def add_categories(category_data, parent=None):
     if parent is None:
@@ -61,10 +22,41 @@ def add_categories(category_data, parent=None):
 
 
 
+def add_meta():
+    sc = HomeCareCategory.objects.all()
+    for c in sc:
+        cat = Category.objects.filter(slug=c.slug).first()
+        if cat:
+            print(c.image)
+            print(c.meta_keywords)
+            cat.meta_description = c.meta_description
+            cat.meta_keywords = c.meta_keywords
+            cat.image = c.image
+            cat.save()
 
-for d in data:
-    print(d)
-    add_categories(d)
+
+def add_service():
+    services = HomeCareService.objects.all()
+    for ser in services:
+        if ser.category:
+            cat = Category.objects.filter(slug=ser.category.slug).first()
+            if not cat:
+                print('!!!!!!!!!!!!!!!!!!!!!!!!!!!!           ', ser.pk )
+            ser.category_new = cat
+            ser.save()
+        else:
+            print('&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&        ', ser.pk)
+
+
+# دستگاه فشارسنج زیر دسته دستگاه فشارسنج
+# فشار سنج مچی زیر دسته دستگاه فشارسنج
+# SERVICE ======>>>>>>>>>>> فشارسنج مچی دیجیتال 735 زنیت مد      959
 
 
 
+
+# add_service()
+#
+# for d in data:
+#     print(d)
+#     add_categories(d)

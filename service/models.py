@@ -1,4 +1,6 @@
 from django.db import models
+
+from category.models import Category
 from utilities.utils import unique_slug_generator
 from django.db.models.signals import pre_save
 from ckeditor_uploader.fields import RichTextUploadingField
@@ -99,6 +101,9 @@ class HomeCareService(models.Model):
     title = models.CharField(verbose_name="عنوان", max_length=255)
     category = models.ForeignKey(
         HomeCareCategory, on_delete=models.SET_NULL, verbose_name="دسته بندی", null=True
+    )
+    category_new = models.ForeignKey(
+        Category, on_delete=models.SET_NULL, verbose_name="دسته بندی چدید", null=True, blank=True
     )
     image = models.ImageField(verbose_name="تصویر", null=True, blank=True)
     banner = models.ImageField(verbose_name="بنر", null=True, blank=True)

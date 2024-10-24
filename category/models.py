@@ -12,7 +12,31 @@ class Category(MP_Node):
         blank=True,
     )
 
+    image = models.ImageField(
+        verbose_name="عکس", blank=True, null=True, upload_to="category"
+    )
+    meta_description = models.CharField(
+        verbose_name="تگ توضیحات",
+        help_text="Meta Description Tag For Seo",
+        max_length=500,
+        null=True,
+        blank=True,
+    )
+    meta_keywords = models.CharField(
+        verbose_name="تگ کلمات کلیدی",
+        help_text="Meta Keywords Tag For Seo",
+        max_length=500,
+        null=True,
+        blank=True,
+    )
+
     node_order_by = ['path',]
+
+    class Meta:
+        verbose_name = "دسته بندی"
+        verbose_name_plural = "دسته بندیها"
+        ordering = ("title",)
+
 
     def __str__(self) -> str:
         if self.get_parent():
