@@ -18,6 +18,10 @@ from .views import (
     ServiceAjaxSearchApi,
 )
 
+from service.views_v2 import (
+    MainCategoryListAPIView
+)
+
 app_name = "service"
 
 urlpatterns = [
@@ -39,5 +43,11 @@ urlpatterns = [
     path("company-service-prices/list", CompanyShortServicePriceListAPIView.as_view()),
     path('category-autocomplete/', CategoryAjaxSearchApi.as_view(), name='category-autocomplete'),
     path('service-autocomplete/', ServiceAjaxSearchApi.as_view(), name='service-autocomplete'),
+
+]
+
+
+urlpatterns += [
+    path("main-categories/v2/", MainCategoryListAPIView.as_view()),
 
 ]

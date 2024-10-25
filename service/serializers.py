@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from category.models import Category
 from user.models import HomeCareCompany
 from .models import (
     Province,
@@ -41,6 +43,19 @@ class HomeCareCategorySerializer(serializers.ModelSerializer):
         exclude = ("father",)
 
 
+class CategorySerializer(serializers.ModelSerializer):
+    has_children = serializers.SerializerMethodField()
+
+    def get_has_children(self, obj):
+        if obj.get_children_count() == 0:
+            return False
+        return True
+
+    class Meta:
+        model = Category
+        exclude = ( "company_list", "cites", "path", "depth", "numchild", )
+
+
 class ServiceFAQSerializer(serializers.ModelSerializer):
     class Meta:
         model = ServiceFAQ
@@ -54,7 +69,7 @@ class ServiceExtraInfoSerializer(serializers.ModelSerializer):
 
 
 class HomeCareServiceSerializer(serializers.ModelSerializer):
-    category = HomeCareCategorySerializer()
+    category = CategorySerializer()
     faqs = serializers.SerializerMethodField()
     infos = serializers.SerializerMethodField()
 
@@ -157,7 +172,7 @@ class CategorySearchSerializer(serializers.ModelSerializer):
     text = serializers.SerializerMethodField()
 
     class Meta:
-        model = HomeCareCategory
+        model = Category
         fields = ('id', 'title', 'name', 'selected_text', 'text')
 
 

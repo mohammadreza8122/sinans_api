@@ -29,6 +29,8 @@ class Category(MP_Node):
         null=True,
         blank=True,
     )
+    cites = models.JSONField(null=True, blank=True)
+    company_list = models.JSONField(null=True, blank=True)
 
     node_order_by = ['path',]
 
