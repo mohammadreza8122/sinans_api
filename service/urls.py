@@ -37,13 +37,18 @@ urlpatterns = [
 
 
     # path("main-categories", MainCategoryListAPIView.as_view()),
-    # path("sub-categories/<slug>", SubCategoryListAPIView.as_view()),
+    path("sub-categories/v2/<slug>", SubCategoryListAPIView.as_view()),
     # path("services", ServiceListAPIView.as_view()),
 
     path("main-categories", HomeCareCategoryListAPIViewV3.as_view()),
     path("sub-categories/<slug>", HomeCareSubCategoryListAPIViewV3.as_view()),
     path("services", HomeCareServiceListAPIViewV3.as_view()),
     path("services/<int:pk>", HomeCareServiceRetrieveAPIView.as_view()),
+
+    # path("main-categories", HomeCareCategoryListAPIViewV3.as_view()),
+    path("sub-categories/v3/<slug>", HomeCareSubCategoryListAPIView.as_view()),
+    # path("services", HomeCareServiceListAPIViewV3.as_view()),
+    # path("services/<int:pk>", HomeCareServiceRetrieveAPIView.as_view()),
 
 
     # Dashboard

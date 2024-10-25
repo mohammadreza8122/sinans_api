@@ -241,9 +241,9 @@ class HomeCareSubCategoryListAPIViewV3(ListAPIView):
             valid_categories = []
             exclude_ids = []
             category = get_object_or_404(
-                HomeCareCategory, slug=uri_to_iri(kwargs.get("slug"))
+                Category, slug=uri_to_iri(kwargs.get("slug"))
             )
-            queryset = queryset.filter(father=category)
+            queryset = category.get_children()
             valid_categories_plus = []
             for cat in queryset:
                 categories = cat.get_descendants()
@@ -272,7 +272,7 @@ class HomeCareSubCategoryListAPIViewV3(ListAPIView):
 
             father = (
                 CategorySerializer(category.get_parent()).data
-                if category.father
+                if category.get_parent()
                 else None
             )
             category_data = CategorySerializer(category).data
