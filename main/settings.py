@@ -16,7 +16,6 @@ from datetime import timedelta
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -27,7 +26,6 @@ SECRET_KEY = 'django-insecure-v1jsy30^*w&5453!by)z&hi^r_p9pju1r^*le@)bclh8eua735
 DEBUG = True
 
 ALLOWED_HOSTS = ["*", ]
-
 
 # Application definition
 
@@ -81,24 +79,20 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
     'setting.switch.SwitchMiddleware'
-    
+
 ]
 
 ROOT_URLCONF = 'main.urls'
 
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_METHODS = [
-  "DELETE",
-  "GET",
-  "OPTIONS",
-  "PATCH",
-  "POST",
-  "PUT",
+    "DELETE",
+    "GET",
+    "OPTIONS",
+    "PATCH",
+    "POST",
+    "PUT",
 ]
-
-
-
-
 
 TEMPLATES = [
     {
@@ -118,20 +112,20 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'main.wsgi.application'
 
-
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
 
 import os
+
 DATABASES = {
     'default': {
-        'ENGINE':   'django.db.backends.mysql',
-        'NAME':     os.getenv("MYSQL_DB_NAME"),
-        'USER':     os.getenv("MYSQL_DB_USER"),
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.getenv("MYSQL_DB_NAME"),
+        'USER': os.getenv("MYSQL_DB_USER"),
         'PASSWORD': os.getenv("MYSQL_DB_PASS"),
-        'HOST':     os.getenv("MYSQL_DB_HOST"),
-        'PORT':     os.getenv("MYSQL_DB_PORT"),
+        'HOST': os.getenv("MYSQL_DB_HOST"),
+        'PORT': os.getenv("MYSQL_DB_PORT"),
     },
 }
 # DATABASES = {
@@ -159,7 +153,6 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -171,9 +164,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 CKEDITOR_UPLOAD_PATH = "uploads/"
-
 
 CKEDITOR_CONFIGS = {
     "default": {
@@ -201,10 +192,8 @@ REST_FRAMEWORK = {
     ),
 }
 
-
 STATIC_URL = "/static/"
 MEDIA_URL = "/media/"
-
 
 # STATIC_ROOT = BASE_DIR / "static"
 MEDIA_ROOT = BASE_DIR / "media"
@@ -212,7 +201,6 @@ MEDIA_ROOT = BASE_DIR / "media"
 STATICFILES_DIRS = [
     BASE_DIR / "static",
 ]
-
 
 SIMPLE_JWT = {
     "ACCESS_TOKEN_LIFETIME": timedelta(weeks=10),
@@ -355,13 +343,16 @@ LOCATION_FIELD = {
     "search.provider": "nominatim",
 }
 
-
 CACHES = {
     'default': {
         'BACKEND': 'django_redis.cache.RedisCache',
-        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'LOCATION': 'redis://sinans-cache/6379',
         'OPTIONS': {
             'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+            'DB': 1,
+            'PASSWORD': 'eSXJGhZbfDsYIG60j5nFXB6b',
+
+
         }
     }
 }
