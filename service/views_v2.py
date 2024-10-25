@@ -244,13 +244,27 @@ class HomeCareSubCategoryListAPIViewV3(ListAPIView):
                 Category, slug=uri_to_iri(kwargs.get("slug"))
             )
             queryset = category.get_children()
-            valid_categories_plus = []
             for cat in queryset:
-                categories = cat.get_descendants()
-                services = HomeCareService.objects.filter(
-                    Q(category_new=cat) |
-                    Q(category_new__in=categories)
-                )
+                categories = []
+                categories.append(cat)
+                cat_1 = cat.get_children()
+                for c1 in cat_1:
+                    categories.append(c1)
+                    category_2 = c1.get_children()
+
+                    for c2 in category_2:
+                        categories.append(c2)
+                        category_3 = c2.get_children()
+
+                        for c3 in category_3:
+                            categories.append(c3)
+                            category_4 = c3.get_children()
+
+                            for c4 in category_4:
+                                categories.append(c4)
+
+
+                services = HomeCareService.objects.filter(category_new__in=categories)
 
                 if (
                         HomeCareServicePrice.objects.filter(
