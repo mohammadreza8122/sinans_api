@@ -225,3 +225,127 @@ class HomeCareCategoryListAPIViewV3(ListAPIView):
                 return Response(serializer.data)
         else:
             return Response([])
+
+
+class HomeCareSubCategoryListAPIViewV3(ListAPIView):
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        city_id = int(request.GET.get("city"))
+        company = HomeCareCompany.objects.filter(id=int(request.GET.get("company")))
+        if City.objects.filter(id=city_id).exists():
+            city = City.objects.get(id=city_id)
+            company = HomeCareCompany.objects.get(id=request.GET.get("company"))
+            valid_categories = []
+            exclude_ids = []
+            category = get_object_or_404(
+                HomeCareCategory, slug=uri_to_iri(kwargs.get("slug"))
+            )
+            queryset = queryset.filter(father=category)
+            valid_categories_plus = []
+            for cat in queryset:
+                categories = cat.get_descendants()
+
+
+                services = HomeCareService.objects.filter(category_new__in=categories)
+
+                if (
+                        HomeCareServicePrice.objects.filter(
+                            service__in=services, city=city, company=company
+                        ).count()
+                        > 0
+                ):
+                    exclude_ids.append(cat.id)
+                    valid_categories.append(cat)
+
+                for obj in HomeCareCompany.objects.filter(is_plus=True, city=city):
+
+                    if (
+                            HomeCareServicePrice.objects.filter(
+                                service__in=services, city=city, company=obj
+                            ).count()
+                            > 0 and cat not in valid_categories
+                    ):
+                        valid_categories.append(cat)
+
+            father = (
+                CategorySerializer(category.get_parent()).data
+                if category.father
+                else None
+            )
+            category_data = CategorySerializer(category).data
+            serializer = self.get_serializer(valid_categories, many=True)
+
+            return Response(
+                {"data": serializer.data, "category": category_data, "father": father}
+            )
+        else:
+            return Response([])
+
+
+class HomeCareServiceListAPIViewV3(ListAPIView):
+    serializer_class = HomeCareServicePriceSerializer
+    queryset = HomeCareServicePrice.objects.all()
+    pagination_class = CustomLimitPagination
+    filter_backends = [
+        DjangoFilterBackend,
+    ]
+    filterset_fields = [
+        "city",
+    ]
+
+
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        company = request.user.company
+
+        valid_companies = [company, ]
+
+        category = request.GET.get("category")
+        if category:
+            category = get_object_or_404(Category, slug=uri_to_iri(category))
+            categories = category.get_descendants()
+
+
+            services = HomeCareService.objects.filter(
+                category_new__in=categories, is_active=True, is_deleted=False
+            )
+
+            queryset = queryset.filter(service__in=services)
+
+        is_active = request.GET.get("active")
+        if is_active is not None:
+            services = HomeCareService.objects.filter(is_active=is_active)
+            queryset = queryset.filter(service__in=services)
+
+        title = request.GET.get("search")
+        if title:
+            services = HomeCareService.objects.filter(title__icontains=title)
+            queryset = queryset.filter(service__in=services)
+
+        if not queryset.filter(company=company).exists():
+
+            for obj in HomeCareCompany.objects.filter(is_plus=True, city=company.city):
+
+                if (
+                        HomeCareServicePrice.objects.filter(
+                            service__in=services, city=company.city, company=obj
+                        ).count()
+                        > 0
+                ):
+                    valid_companies.append(obj)
+
+        if company:
+            queryset = queryset.filter(company__in=valid_companies)
+
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
