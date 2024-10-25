@@ -247,9 +247,10 @@ class HomeCareSubCategoryListAPIViewV3(ListAPIView):
             valid_categories_plus = []
             for cat in queryset:
                 categories = cat.get_descendants()
-
-
-                services = HomeCareService.objects.filter(category_new__in=categories)
+                services = HomeCareService.objects.filter(
+                    Q(category_new=cat) |
+                    Q(category_new__in=categories)
+                )
 
                 if (
                         HomeCareServicePrice.objects.filter(
@@ -257,6 +258,7 @@ class HomeCareSubCategoryListAPIViewV3(ListAPIView):
                         ).count()
                         > 0
                 ):
+
                     exclude_ids.append(cat.id)
                     valid_categories.append(cat)
 
@@ -268,6 +270,7 @@ class HomeCareSubCategoryListAPIViewV3(ListAPIView):
                             ).count()
                             > 0 and cat not in valid_categories
                     ):
+
                         valid_categories.append(cat)
 
             father = (
