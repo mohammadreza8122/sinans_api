@@ -21,7 +21,8 @@ from .views import (
 from service.views_v2 import (
     MainCategoryListAPIView,
     SubCategoryListAPIView,
-    ServiceListAPIView
+    ServiceListAPIView,
+    ServiceRetrieveAPIView,
 )
 
 app_name = "service"
@@ -29,7 +30,6 @@ app_name = "service"
 urlpatterns = [
     path("cities", CityListAPIView.as_view()),
     path("provinces", ProvinceListAPIView.as_view()),
-    path("services/<int:pk>", HomeCareServiceRetrieveAPIView.as_view()),
 
 
     # path("main-categories", MainCategoryListAPIView.as_view()),
@@ -39,6 +39,8 @@ urlpatterns = [
     path("main-categories", HomeCareCategoryListAPIView.as_view()),
     path("sub-categories/<slug>", HomeCareSubCategoryListAPIView.as_view()),
     path("services", HomeCareServiceListAPIView.as_view()),
+    path("services/<int:pk>", HomeCareServiceRetrieveAPIView.as_view()),
+
 
     # Dashboard
     path("services/all", ShortServiceListAPIView.as_view()),
@@ -57,8 +59,9 @@ urlpatterns = [
 
 
 urlpatterns += [
-    path("main-categories/v2/", HomeCareCategoryListAPIView.as_view()),
-    path("sub-categories/v2/<slug>", HomeCareSubCategoryListAPIView.as_view()),
-    path("services/v2/", HomeCareServiceListAPIView.as_view()),
+    path("main-categories/v2/", MainCategoryListAPIView.as_view()),
+    path("sub-categories/v2/<slug>", SubCategoryListAPIView.as_view()),
+    path("services/v2/", ServiceListAPIView.as_view()),
+    path("services/v2/<int:pk>", ServiceRetrieveAPIView.as_view()),
 
 ]
