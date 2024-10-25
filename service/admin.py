@@ -115,6 +115,7 @@ class CategoryyLookup(LookupChannel):
         html = ''.join(html)
         return format_html(html.format(obj))
 
+
 @admin.register(HomeCareService)
 class HomeCareServiceAdmin(admin.ModelAdmin):
     readonly_fields = ['created_by', 'category']
@@ -122,8 +123,17 @@ class HomeCareServiceAdmin(admin.ModelAdmin):
     search_fields = ("title",)
     list_filter = ("category_new", )
     actions = ("delete_services",)
-
     inlines = [ServiceFAQInline, ServiceExtraInfoInline]
+
+    fieldsets = (
+        ('', {
+            'fields': (
+                'is_active','is_deleted' ,'title',
+                'category_new' ,'image',
+                'banner', 'icon', 'text', 'created_by'
+            )
+        }),
+    )
 
     @admin.action(description="حذف")
     def delete_services(self, request, queryset):
