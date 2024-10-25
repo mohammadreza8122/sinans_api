@@ -18,6 +18,9 @@ from ajax_select import register, LookupChannel
 from ajax_select.admin import AjaxSelectAdmin
 from service.models import HomeCareCategory
 from django.db.models import Q
+from django.core.cache import cache
+from django.contrib.admin import SimpleListFilter
+from category.models import Category
 
 
 class CityInline(admin.TabularInline):
@@ -46,94 +49,48 @@ class CityAdmin(admin.ModelAdmin):
     list_display = ("title", "province")
     list_filter = ("title", "province")
 
-@register('categories')
-class CategoryLookup(LookupChannel):
-    model = HomeCareCategory
 
-    def get_query(self, q, request):
-        return self.model.objects.filter(Q(title__icontains=q) | Q(father__title__icontains=q) )[0:40]  # adjust the query as needed
+class CategoryFilter(SimpleListFilter):
+    title = 'category'
+    parameter_name = 'category'
 
-    def get_result(self, obj):
-        return obj.title
+    def lookups(self, request, model_admin):
+        data = cache.get('service_category_filter')
+        if not data:
+            parents = set(Category.get_tree())
+            data=  [(p.id, str(p)) for p in parents]
+            cache.set('service_category_filter', data,  60 * 30)
+        return data
 
-    def format_match(self, obj):
-        html = [
-            "<div style='background-color: #f0fff0; padding: 10px;  '>"
-                "<span >"
-                    "{}"
-                "</span>"
-                "<br>"
-            "</div>"
-        ]
-        html = ''.join(html)
-        return format_html(html.format(obj))
-
-    def format_item_display(self, obj):
-        html = [
-            "<div style='background-color: #f0fff0; padding: 10px;  '>"
-                "<span >"
-                    "{}"
-                "</span>"
-                "<br>"
-            "</div>"
-        ]
-        html = ''.join(html)
-        return format_html(html.format(obj))
-
-
-@register('fathers')
-class CategoryyLookup(LookupChannel):
-    model = HomeCareCategory
-
-    def get_query(self, q, request):
-        return self.model.objects.filter(Q(title__icontains=q)  )[0:40]  # adjust the query as needed
-
-    def get_result(self, obj):
-        return obj.title
-
-    def format_match(self, obj):
-        html = [
-            "<div style='background-color: #f0fff0; padding: 10px;  '>"
-                "<span >"
-                    "{}"
-                "</span>"
-                "<br>"
-            "</div>"
-        ]
-        html = ''.join(html)
-        return format_html(html.format(obj))
-
-    def format_item_display(self, obj):
-        html = [
-            "<div style='background-color: #f0fff0; padding: 10px;'>"
-                "<span >"
-                    "{}"
-                "</span>"
-                "<br>"
-            "</div>"
-        ]
-        html = ''.join(html)
-        return format_html(html.format(obj))
+    def queryset(self, request, queryset):
+        if self.value():
+            cat = Category.objects.get(id=self.value())
+            cats = cat.get_descendants()
+            services = HomeCareService.objects.filter(
+                Q(category_new=self.value()) |  Q(category_new__in=cats)
+            )
+            return services
+        return queryset
 
 
 @admin.register(HomeCareService)
 class HomeCareServiceAdmin(admin.ModelAdmin):
-    readonly_fields = ['created_by', 'category']
+    readonly_fields = ['created_by']
     list_display = ("title", "category_new", "is_active", "is_deleted", 'created_by')
     search_fields = ("title",)
-    list_filter = ("category_new", )
     actions = ("delete_services",)
     inlines = [ServiceFAQInline, ServiceExtraInfoInline]
+    list_per_page = 30
+    exclude = ('category',)
+    list_filter = (CategoryFilter, )
 
-    fieldsets = (
-        ('', {
-            'fields': (
-                'is_active','is_deleted' ,'title',
-                'category_new' ,'image',
-                'banner', 'icon', 'text', 'created_by'
-            )
-        }),
-    )
+
+    def get_queryset(self, request):
+        queryset = super().get_queryset(request)
+        queryset = queryset.defer('category')
+        queryset = queryset.select_related('category_new')
+        return queryset
+
 
     @admin.action(description="حذف")
     def delete_services(self, request, queryset):

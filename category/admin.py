@@ -15,10 +15,15 @@ class ParentFilter(SimpleListFilter):
     parameter_name = 'parent'
 
     def lookups(self, request, model_admin):
-        parents = set(Category.get_tree())
-        return [(p.id, str(p)) for p in parents]
+        data = cache.get('parent_category_filter')
+        if not data:
+            parents = set(Category.get_tree())
+            data=  [(p.id, str(p)) for p in parents]
+            cache.set('parent_category_filter', data,  60 * 30)
+        return data
 
     def queryset(self, request, queryset):
+
         if self.value():
             cat = Category.objects.get(id=self.value())
             return cat.get_children()
@@ -31,15 +36,11 @@ class CategoryAdmin(admin.ModelAdmin):
     list_display = ('title', 'get_father', 'created_by')
     form = CategoryAdminForm
     readonly_fields = ('created_by', )
-    fieldsets = (
-        ('Detail info', {
-            'fields': (
-                'title', 'slug', 'image',
-                'meta_description', 'meta_keywords',
-                '_ref_node_id', 'created_by'
-            )
-        }),
-    )
+    exclude = ("company_list", "cites", "path", "depth", "numchild",)
+    list_per_page = 30
+    list_filter = [ParentFilter, ]
+
+
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
         if '_position' in form.base_fields:

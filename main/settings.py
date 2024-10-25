@@ -57,6 +57,7 @@ INSTALLED_APPS = [
     'import_export',
     "ajax_select",
     "django_select2",
+    'cachalot',
     "customadmin",
     "setting",
     "user",
@@ -78,6 +79,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
     'setting.switch.SwitchMiddleware'
     
 ]
@@ -356,7 +358,11 @@ LOCATION_FIELD = {
 
 CACHES = {
     'default': {
-        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
-        'LOCATION': 'unique-snowflake',
+        'BACKEND': 'django_redis.cache.RedisCache',
+        'LOCATION': 'redis://127.0.0.1:6379/1',
+        'OPTIONS': {
+            'CLIENT_CLASS': 'django_redis.client.DefaultClient',
+        }
     }
 }
+CACHALOT_TIMEOUT = 60 * 30
