@@ -47,9 +47,13 @@ class CategorySerializer(serializers.ModelSerializer):
     has_children = serializers.SerializerMethodField()
 
     def get_has_children(self, obj):
-        if obj.get_children_count() == 0:
-            return False
-        return True
+        try:
+            if obj.get_children_count() == 0:
+                return False
+            return True
+        except Exception as e:
+            return str(e)
+
 
     class Meta:
         model = Category
