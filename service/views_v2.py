@@ -74,4 +74,44 @@ class MainCategoryListAPIView(ListAPIView):
 
 
 
+class SubCategoryListAPIView(ListAPIView):
+    serializer_class = CategorySerializer
+    queryset = Category.objects.all()
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        city_id = int(request.GET.get("city"))
+        company_id = int(request.GET.get("company"))
+
+        city = City.objects.filter(id=city_id).first()
+        company = HomeCareCompany.objects.filter(id=company_id).first()
+
+        if not city or not company:
+            return Response({'msg': 'city and company not found', 'status': 'failed'}, status=404)
+
+        category = get_object_or_404(
+            Category, slug=uri_to_iri(kwargs.get("slug"))
+        )
+        queryset = category.get_children()
+
+        for cat in queryset:
+            city_list = cat.cites.get('city_list', [])
+            company_list = cat.company_list.get('company_list', [])
+
+            if (city.pk not in city_list) and (company.pk not in company_list):
+                queryset = queryset.exclude(id=cat.id)
+
+        father = (
+            CategorySerializer(category.get_parent()).data
+            if category.get_parent()
+            else None
+        )
+        category_data = CategorySerializer(category).data
+        serializer = self.get_serializer(queryset, many=True)
+
+        return Response(
+            {"data": serializer.data, "category": category_data, "father": father}
+        )
+
+
 

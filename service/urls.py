@@ -19,7 +19,8 @@ from .views import (
 )
 
 from service.views_v2 import (
-    MainCategoryListAPIView
+    MainCategoryListAPIView,
+    SubCategoryListAPIView
 )
 
 app_name = "service"
@@ -49,5 +50,6 @@ urlpatterns = [
 
 urlpatterns += [
     path("main-categories/v2/", MainCategoryListAPIView.as_view()),
+    path("sub-categories/v2/<slug>", SubCategoryListAPIView.as_view()),
 
 ]
