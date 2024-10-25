@@ -185,3 +185,43 @@ class ServiceRetrieveAPIView(RetrieveAPIView):
     queryset = HomeCareServicePrice.objects.all()
 
 
+class HomeCareCategoryListAPIViewV3(ListAPIView):
+    serializer_class = CategorySerializer
+    queryset = Category.get_root_nodes()
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        city = City.objects.filter(id=int(request.GET.get("city")))
+        company = HomeCareCompany.objects.filter(id=int(request.GET.get("company")))
+        if city.exists():
+            if company.exists():
+                city = City.objects.get(id=int(request.GET.get("city")))
+                company = HomeCareCompany.objects.get(id=request.GET.get("company"))
+                valid_categories = []
+                for cat in queryset:
+                    categories = cat.get_descendants()
+
+                    services = HomeCareService.objects.filter(category_new__in=categories)
+
+                    if (
+                            HomeCareServicePrice.objects.filter(
+                                service__in=services, city=city, company=company
+                            ).count()
+                            > 0
+                    ):
+                        valid_categories.append(cat)
+
+                    for obj in HomeCareCompany.objects.filter(is_plus=True, city=city):
+
+                        if (
+                                HomeCareServicePrice.objects.filter(
+                                    service__in=services, city=city, company=obj
+                                ).count()
+                                > 0 and cat not in valid_categories and not obj.allowed_categories in categories
+                        ):
+                            valid_categories.append(cat)
+
+                serializer = self.get_serializer(valid_categories, many=True)
+                return Response(serializer.data)
+        else:
+            return Response([])
