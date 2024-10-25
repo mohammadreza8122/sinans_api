@@ -81,14 +81,16 @@ class SubCategoryListAPIView(ListAPIView):
 
     def list(self, request, *args, **kwargs):
         queryset = self.filter_queryset(self.get_queryset())
-        city_id = int(request.GET.get("city"))
-        company_id = int(request.GET.get("company"))
+        try:
+            city = City.objects.filter(id=int(request.GET.get("city"))).first()
+            company = HomeCareCompany.objects.filter(id=int(request.GET.get("company"))).first()
 
-        city = City.objects.filter(id=city_id).first()
-        company = HomeCareCompany.objects.filter(id=company_id).first()
+        except:
+            city = None
+            company = None
 
-        if not city or not company:
-            return Response({'msg': 'city and company not found', 'status': 'failed'}, status=404)
+        # if not city or not company:
+        #     return Response({'msg': 'city and company not found', 'status': 'failed'}, status=404)
 
         category = get_object_or_404(
             Category, slug=uri_to_iri(kwargs.get("slug"))
@@ -175,5 +177,11 @@ class ServiceListAPIView(ListAPIView):
 
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+
+class ServiceRetrieveAPIView(RetrieveAPIView):
+    serializer_class = DetailServiceSerializer
+    queryset = HomeCareServicePrice.objects.all()
 
 
