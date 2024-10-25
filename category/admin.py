@@ -8,7 +8,7 @@ from category.forms import CategoryAdminForm
 class CategoryAdmin(TreeAdmin):
     search_fields = ("title",)
     form = CategoryAdminForm
-
+    readonly_fields = ('company_list', 'cites')
 
     def get_form(self, request, obj=None, **kwargs):
         form = super().get_form(request, obj, **kwargs)
