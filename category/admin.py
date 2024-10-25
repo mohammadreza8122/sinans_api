@@ -5,6 +5,7 @@ from category.forms import CategoryAdminForm
 from django.utils.html import format_html
 from django.contrib.admin.models import LogEntry, ADDITION
 from django.contrib.contenttypes.models import ContentType
+from django.core.cache import cache
 
 
 from django.contrib.admin import SimpleListFilter
@@ -26,8 +27,7 @@ class ParentFilter(SimpleListFilter):
 
 @admin.register(Category)
 class CategoryAdmin(admin.ModelAdmin):
-    list_filter = [ParentFilter, ]
-    search_fields = ("title", "slug")
+    search_fields = ("title",)
     list_display = ('title', 'get_father', 'created_by')
     form = CategoryAdminForm
     readonly_fields = ('created_by', )
@@ -77,8 +77,5 @@ class CategoryAdmin(admin.ModelAdmin):
             ))
         return create_by
     created_by.short_description = "ایحاد شده توسط"
-
-
-
 
 
