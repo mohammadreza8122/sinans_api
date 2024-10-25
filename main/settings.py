@@ -253,16 +253,16 @@ SIMPLE_JWT = {
 }
 
 JAZZMIN_SETTINGS = {
-    "welcome_sign": "خوش آمدید به پنل مدیریت سینانس",
+    "welcome_sign": "خوش آمدید",
     "show_sidebar": True,
     "site_logo": "/images/logo.png",
-    "navigation_expanded": True,  # منوی ناوبری به صورت پیش‌فرض باز است
-    "hide_apps": ["auth"],  # پنهان کردن برنامه auth از منو
-    "copyright": "© 2024 سینانس. تمامی حقوق محفوظ است.",
-    "hide_models": ["auth.User"],  # پنهان کردن مدل User در برنامه auth
+    "navigation_expanded": False,
+    "hide_apps": [],
+    "copyright": " ",
+    "hide_models": [],
     "site_title": "سینانس",
-    "site_header": "پنل مدیریت سینانس",
-    "related_modal_active": True,  # فعال سازی مدال مرتبط برای روابط
+    "site_header": "سینانس",
+    "related_modal_active": False,
     "icons": {
         "auth": "bi bi-people",
         "auth.Group": "bi bi-people",
@@ -272,16 +272,81 @@ JAZZMIN_SETTINGS = {
         "user.UserAddress": "bi bi-geo-alt",
         "user.VisitedProduct": "bi bi-eye",
 
+        "blog": "bi bi-book",
+        "blog.ArticleCategory": "bi bi-list",
+        "blog.TagArticle": "bi bi-tag",
+        "blog.Article": "bi bi-book",
+        "blog.CommentArticle": "bi bi-chat",
+
+        "about": "bi bi-exclamation-circle",
+
+        "service": "bi bi-heart-pulse",
+
+        "contact": "bi bi-headset",
+
+        "setting": "bi bi-gear",
+        "setting.SiteSetting": "bi bi-gear",
+        "setting.AboutUs": "bi bi-exclamation-circle",
+        "setting.Terms": "bi bi-file-text",
+        "setting.License": "bi bi-credit-card",
+        "setting.Team": "bi bi-people",
+        "setting.OurCustomer": "bi bi-people",
+        "setting.ContactUs": "bi bi-headset",
+        "setting.SettingContactUs": "bi bi-gear",
+        "setting.Seller": "bi bi-people",
+        "setting.SellerSocialMedia": "bi bi-instagram",
+        "setting.SeoSetting": "bi bi-google",
+        "setting.Feature": "bi bi-gear",
+        "setting.FAQPage": "bi bi-question-circle",
+        "setting.FAQ": "bi bi-question-circle",
+        "setting.Banner": "bi bi-image",
+        "setting.ShopBanner": "bi bi-image",
+        "setting.StaticBanner": "bi bi-image",
+        "setting.SocialMedia": "bi bi-instagram",
+        "setting.NewsLetter": "bi bi-envelope",
+
+        "ticket": "bi bi-ticket-perforated",
+        "ticket.Ticket": "bi bi-ticket-perforated",
+        "ticket.TicketSubject": "bi bi-fonts",
+
+        "cart": "bi bi-currency-dollar",
+        "cart.Cart": "bi bi-cart",
+        "cart.CartItem": "bi bi-cart",
+        "cart.DesignFile": "bi bi-files",
+        "cart.TransferType": "bi bi-truck",
+        "cart.Order": "bi bi-currency-dollar",
+
+        "alternative_product": "bi bi-box",
+        "alternative_product.Product": "bi bi-box",
+        "alternative_product.ProductComment": "bi bi-chat",
+        "alternative_product.Options": "bi bi-list-ul",
+        "alternative_product.OptionsTitle": "bi bi-list-ul",
+        "alternative_product.Gallery": "bi bi-images",
+        "alternative_product.RangePrice": "bi bi-currency-dollar",
+        "alternative_product.PrintPrice": "bi bi-currency-dollar",
+        "alternative_product.ProductTag": "bi bi-tag",
+        "alternative_product.ProductCategory": "bi bi-boxes",
+        "alternative_product.ProductFAQ": "bi bi-question-circle",
+        "alternative_product.Color": "bi bi-palette",
+        "alternative_product.PostPrintService": "bi bi-printer",
+        "alternative_product.FilterCategory": "bi bi-funnel",
+
+        "analytics": "bi bi-graph-up",
+        "analytics.IncomingRequest": "bi bi-graph-up",
+
+        "portfolio": "bi bi-images",
+        "portfolio.Portfolio": "bi bi-images",
+
+        "wallet": "bi bi-wallet",
+        "wallet.Wallet": "bi bi-wallet",
+        "wallet.BankCard": "bi bi-credit-card",
+        "wallet.WalletRequests": "bi bi-currency-exchange",
+        "wallet.WalletTransactions": "bi bi-currency-exchange",
+
     },
 }
 
-JAZZMIN_UI_TWEAKS = {
-    "actions_sticky_top": True,  # دکمه‌های عملیات در بالای صفحه چسبیده می‌مانند
-    "show_ui_builder": True,  # فعال سازی نمایش UI Builder
-
-    "search_model": True,  # فعال سازی جستجوی مدل در بالای صفحه
-}
-
+JAZZMIN_UI_TWEAKS = {"actions_sticky_top": True}
 
 LOCATION_FIELD = {
     "map.provider": "openstreetmap",
