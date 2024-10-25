@@ -122,9 +122,6 @@ class ServiceListAPIView(ListAPIView):
     filter_backends = [
         DjangoFilterBackend,
     ]
-    filterset_fields = [
-        "city",
-    ]
 
 
     def list(self, request, *args, **kwargs):
@@ -135,33 +132,14 @@ class ServiceListAPIView(ListAPIView):
 
         category = request.GET.get("category")
         if category:
-            category = get_object_or_404(HomeCareCategory, slug=uri_to_iri(category))
-            first_level_categories = HomeCareCategory.objects.filter(father=category)
-            second_level_categories = HomeCareCategory.objects.filter(
-                father__in=first_level_categories
-            )
-            third_level_categories = HomeCareCategory.objects.filter(
-                father__in=second_level_categories
-            )
-            fourth_level_categories = HomeCareCategory.objects.filter(
-                father__in=third_level_categories
-            )
-            fifth_level_categories = HomeCareCategory.objects.filter(
-                father__in=fourth_level_categories
+            category = get_object_or_404(Category, slug=uri_to_iri(category))
+            child_categories = category.get_descendants()
+
+
+            services = HomeCareService.objects.filter(is_active=True, is_deleted=False).filter(
+                 Q(category_new=category) | Q(category_new__in=child_categories)
             )
 
-            categories = [
-                *first_level_categories,
-                *second_level_categories,
-                *third_level_categories,
-                *fourth_level_categories,
-                *fifth_level_categories,
-                category,
-            ]
-
-            services = HomeCareService.objects.filter(
-                category__in=categories, is_active=True, is_deleted=False
-            )
 
             queryset = queryset.filter(service__in=services)
 

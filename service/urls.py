@@ -20,7 +20,8 @@ from .views import (
 
 from service.views_v2 import (
     MainCategoryListAPIView,
-    SubCategoryListAPIView
+    SubCategoryListAPIView,
+    ServiceListAPIView
 )
 
 app_name = "service"
@@ -28,7 +29,7 @@ app_name = "service"
 urlpatterns = [
     path("cities", CityListAPIView.as_view()),
     path("provinces", ProvinceListAPIView.as_view()),
-    path("services", HomeCareServiceListAPIView.as_view()),
+    path("services", ServiceListAPIView.as_view()),
     path("services/<int:pk>", HomeCareServiceRetrieveAPIView.as_view()),
 
 
@@ -55,5 +56,6 @@ urlpatterns = [
 urlpatterns += [
     path("main-categories/v2/", HomeCareCategoryListAPIView.as_view()),
     path("sub-categories/v2/<slug>", HomeCareSubCategoryListAPIView.as_view()),
+    path("services", HomeCareServiceListAPIView.as_view()),
 
 ]
